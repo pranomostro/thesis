@@ -3,19 +3,146 @@
 
 \chapter{Related Work}\label{chapter:related}
 
+%CANDO: Write about regression testing, model-based testing where
+%tests are selected from automatically generated test suites?
+
 5 pages
 
-\section{Test Case Selection}
+The literature on handling large test suites is comprehensive, and
+this summarization will only cover small parts of it. For an older,
+but comprehensive overview dividing the field into test-suite
+reduction, test case selection and test case priorization, see
+\cite{yoo2012regression}. A newer overview focused exclusively on
+test suite reduction is \cite{khan2016survey}, which attempts to
+create a full taxonomy of TSR frameworks/tools and specifically their
+implementions. \cite{khan2018systematic} focuses on the algorithmic
+approach (i.e. greedy/clustering/searching/hybrid) of the TSR system
+and gives recommendations for future the evaluation of TSR methods.
+
+The methods for improving the runtimes of large test suites discussed
+in the literature can be divided into three related approaches
+(\cite{yoo2012regression}): Test suite minimization (here called test
+suite reduction), test case priorization, and test case selection.
+
+%Distinction: Temporary or permanent, adequate or inadequate
+%ordered or unordered, recency-aware and recency-unaware.
+
+%Move this to terms & definitions instead?
+
+Let $T=\{t_1, t_2, \dots, t_n\}$ be a set of $n$ tests, and a
+set of requirements $R=\{r_1, \dots, r_m\}$. These requirements
+can take very different forms: they can correspond to coverage of
+lines/branches/functions, parts of an explicit specification that must
+be tested, runtimes of individual tests, or faults that were discovered
+in the past.
+
+Let $m: T \rightarrow \mathcal{P}(R)$ a function that maps test cases
+to the requirements they test (one test can test multiple requirements,
+but any requirement needs only one test case to be fulfilled, i.e. there
+can be no requirements that need 2 or more tests to be fulfilled).
 
 \section{Test Case Priorization}
 
+Test case priorization attempts to find a permutation $T' \in S_{T}$
+($S_{T}$ being the set of all permutations of T) of test cases that
+cover as many requirements as early as possible.
+
+More formally, the test case priorization problem is to find a permutation
+$T' \in S_{T}$ so that
+
+$$ \forall T'' \in S_{T}: T' \neq T'' \land \forall i \in 1..n: |\bigcup_{j=1}^{i} m(T'(j))| \geq |\bigcup_{j=1}^{i} m(T''(j))| $$
+
+%CANDO Maybe use APFD here instead?
+
+Test case priorization subsumes test suite reduction: Given an ordering
+$T'$ of test cases, it is easy to select the first $o$ test cases that
+together fulfill all requirements.
+
+\section{Test Case Selection}
+
+Test case selection attempts to temporarily find a subset of tests that
+maximize the requirements for a set of of recent changes to the software.
+
+\cite{yoo2012regression} formulate the problem of test case selection as
+
+"\textit{Given}: The program, P, the modified version of P, P' and a test suite, T. \\
+\textit{Problem}: Find a subset of T, T', with which to test P'."
+
+Test case selection usually assumes a high degree of transparency and
+the availability of a lot of information about the SUT, such as execution
+graphs, coverage information, and sometimes information about the running
+times of individual tests.
+
 \section{Test Suite Reduction}
+
+Test suite reduction, on the other hand, attempts to permanently reduce
+the size of the test suite by removing redundant tests. The distinguishing
+feature from test case selection is that it doesn't take into account
+recent changes.
+
+One can now distinguish two cases:
+
+%CANDO: create subsubsections here?
+
+Generally, in test case reduction two different cases are distinguished:
+adequate and inadequate reduction.
+
+In adequate test suite reduction, the goal is to find the smallest subset
+of $T$ so that all $R$ are satisfied:
+
+$$T_{r}=\hbox{argmin}_{T_{r}} |T_{r} \subset T: R=\bigcup_{t_{r} \in T_{r}} m(t_{r})|$$
+
+This goal, however, is rarely fulfilled. Often, the objective is to
+keep the resulting test suite as small as possible, since reaching
+this optimum is computationally hard (as researchers have remarked
+(\cite{khan2016survey}), it is equivalent to the NP-complete set cover
+problem). %CANDO: cite michael & David 1979 here.
+
+Instead, researchers attempt to reduce the size of test suites further,
+while still keeping running times small.
+
+Other possible goals include to reduce the total runtime of the reduced
+test suite, but due to the absence of information about test runtimes,
+this goal has been studied less. %CANDO: [citation needed]
+
+Adequate reduction needs the requirements $R$ to be present at the time
+of reduction to judge whether all requirements have been fulfilled.
+
+The second case of test suite reduction is the inadequate one. An
+inadequate test suite reduction fixes the size of the reduce test suite
+to a budget $B=|T_{r}|$. This cannot guarantee that all requirements
+are completely fulfilled, but often reduces runtimes significantly.
+%CANDO: perhaps find a source for this statement.
+
+Inadequate reduction can work without access to the requirements.
+For example, the FAST family needs only the content of the testcases to
+perform a reduction. However, inadequate reduction gives no guarantees
+about the performance of the resulting reduced test suite.
+
+\cite{khan2018systematic} distinguishes 4 different types of test
+suite reduction approaches: Greedy selection, Clustering, Searching,
+and Hybrid methods.
 
 \subsection{Greedy Selection}
 
-Needs coverage information
+Greedy approaches, first introduced by \cite{rothermel2001prioritizing}
+(in the context of test case priorization), work by selecting test cases
+based on a coverage criterion $C=\{c_1, \dots, c_{\hbox{ncov}}\}$.
+
+\cite{khan2018systematic} describe the fully general case of greedy-based
+test suite reduction, in which a test case is first selected using
+the coverage criterion and a heuristic, and then removed from the test
+set and added to the set of the reduced test suite, until the coverage
+criterion is completely fulfilled by the reduced test suite.
+
+Two simple heuristics, described more in detail later, are the total
+heuristic (choosing the test with the highest amount of coverage from
+the test set) and the additional heuristic (choosing the test with the
+highest amount of coverage yet not covered by the reduced test suite).
 
 \subsection{Clustering}
+
+
 
 \subsection{Searching}
 

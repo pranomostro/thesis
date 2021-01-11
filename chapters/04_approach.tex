@@ -7,17 +7,87 @@
 
 \section{Replicating ''Scalable Approaches for Test Suite Reduction''}
 
+This paper attempts to replicate the findings in
+\cite{cruciani2019scalable}, using different test data and adding a
+further algorithm as a baseline. \cite{cruciani2019scalable} builds on
+\cite{miranda2018fast} (which introduced the FAST family), and adds two
+new algorithms to the FAST family.
+
+We use the code from the original paper, published online at
+\url{https://github.com/ICSE19-FAST/FAST-R}, with some slight
+modifications to fix faults discovered in the original code.
+
 1 page
 
 \section{Implemented Algorithms}
+
+\cite{cruciani2019scalable} compares 7 different methods of
+test-suite reduction. 4 of those (\textbf{FAST++}, \textbf{FAST-all},
+\textbf{FAST-CS} and \textbf{FAST-pw}) are in the FAST family
+(first introduced in \cite{miranda2018fast}), which uses clustering
+techniques to find representative test cases. 2 other algorithms are
+taken from the similarly clustering-based ART family, first developed
+in \cite{chen2010adaptive}. The last reduction method examined in
+\cite{cruciani2019scalable} is the Greedy Additional (\textbf{GA})
+algorithm developed in \cite{rothermel2001prioritizing}, which is included
+because "for its simplicity and effectiveness [it] is often considered
+as a baseline."
+
+This paper also includes a random selection algorithm as a baseline,
+as recommended by \cite{khan2018systematic}.
 
 7 pages
 
 \subsection{FAST}
 
+The FAST family is a clustering-based family of algorithms for test
+suite reduction (\cite{miranda2018fast}, \cite{cruciani2019scalable}).
+
+The FAST family is a collection of 4 clustering based TSR algorithms
+that work both with adequate and inadequate TSR problems, especially
+for large test suites.
+
 4 pages
 
 \subsubsection{FAST++}
+
+% CANDO: Say that it uses python's vectorizer.fit_transform for this?
+
+The FAST++ algorithm starts with a preparation phase: the tests from $T$
+are transformed into points in a vector space by treating each token
+(e.g. character) of the test case as a dimension, with the value of that
+dimension being the value of the token at the position (e.g. the value
+of the nth character), with the components being "weighted according to
+[a] term-frequency scheme, i.e., the weights are equal to the frequency
+of the corresponding terms" (\cite{cruciani2019scalable}).
+
+Since dealing with high-dimensional vector spaces is computationally
+costly (e.g. when computing the Euclidean distance), the algorithm
+performs a random projection into a lower-dimensional vector-space that
+nonetheless still mostly preserves the pairwise distances of the vectors
+(in this case a sparse random projection).
+%CANDO: cite Achlioptas and Lindenstrauss here
+
+The second phase of FAST++ is executing the k-means++ algorithm %CANDO: cite Arthur & Vassilvitskii
+on the resulting vectors, with k in the inadequate case being the
+budget of the reduction, and in the adequate case being a variable
+that is incremented until the requirements are met. The k-means
+algorithm is a clustering algorithm that finds k clusters of vectors in a
+high-dimensional space, i.e. minimizing the distance between points within
+a cluster, by iteratively assigning points to the nearest mean (distance
+being measured in squared Euclidean distances) and recalculating means
+until a fixed point is reached. The k-means++ algorithm only differs
+from k-means in the method for choosing initial centers of clusters:
+While k-means selects values at random, k-means++ selects the initial by
+computing the center of all points, and then selecting k other centers by
+sampling points using a distribution proportional to the distance of the
+points to the global mean. This both increases speed %CANDO: citation?
+and gives guarantees that the solution is $\mathcal{O}(\log k)$ competitive
+to the optimal solution. %CANDO: [citation needed]
+
+After computing the k clusters, FAST++ returns the vectors closest to
+the centers of the k clusters (i.e. the tests most representatitve for
+those clusters).
 
 \subsubsection{FAST-all}
 
@@ -29,7 +99,60 @@
 
 $\frac{1}{2}$ a page
 
-New method, after \cite{khan2018systematic} (p. 17)
+\cite{khan2018systematic} gives 12 recommendations on how to execute and
+evaluate test suite reduction experiments. \cite{cruciani2019scalable}
+follows 11 out of these 12 analyses, but does not include a simple
+alternative baseline, such as random selection from the set of tests.
+
+This analysis adds an algorithm that randomly selects tests from the test
+set.
+In the inadequate case, it simply chooses $B$ random tests from the
+test set:
+
+%TODO: perhaps make these just pseudocode? Or leave out completely?
+
+\begin{figure}[htpb]
+\centering
+\begin{tabular}{c}
+\begin{lstlisting}[language=python]
+def random_selection(input_file, B=0):
+	TS = loadTestSuite(input_file)
+	sel=random.sample(list(range(1,len(TS)+1)), min(B, len(TS)))
+	return sel
+\end{lstlisting}
+\end{tabular}
+\caption[Random budget selection]{The algorithm for selecting $B$ tests from the test suite randomly}\label{fig:random-budget-listing}
+\end{figure}
+
+In the adequate case, random selection removes a random test from the set
+of tests and adds it to the selected tests until the coverage is adequate.
+
+\begin{figure}[htpb]
+\centering
+\begin{tabular}{c}
+\begin{lstlisting}[language=python]
+def random_selection_adequate(input_file, B=0): 
+	TS = loadTestSuite(input_file) 
+
+	selcov=set() 
+	allcov=set() 
+	for k in list(TS.keys()): 
+		allcov=allcov.union(TS[k]) 
+
+	tests=set(range(1, len(TS)+1)) 
+	sel=list() 
+
+	while len(tests)>0 and len(allcov.difference(selcov))>0:
+		selected=random.sample(tests, 1)[0] 
+		sel.append(selected) 
+		tests.remove(selected) 
+		selcov=selcov.union(TS[selected]) 
+
+	return sel
+\end{lstlisting}
+\end{tabular}
+\caption[Random adequate selection]{The algorithm for selecting tests from the test suite randomly, adequate case}\label{fig:random-adequate-listing}
+\end{figure}
 
 \subsection{Adaptive Random Testing}
 

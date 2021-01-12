@@ -31,24 +31,28 @@ medium sized open-source Java projects. They all used either JUnit
 4 or JUnit 5 as their testing framework, and the tool Maven %CANDO: right capitalization?
 for building and testing. We used the latest version.
 
-The projects used, their versions and size are presented in table CANDO.
+The projects used, their versions and size are presented in table CANDO
+(project and test suite size are in lines of code, the version is the
+6-digit prefix of the git commit used).
 
 \begin{table}[htpb]
 	\caption[]{}\label{tab:projects} %Project name, version, size of test suite, size of project, link to project
 	\centering
-	\begin{tabular}{l l l l l}
+	\begin{tabular}{l l l l l l}
 		\toprule
-		Project name & Version (git commit) & Size of project (loc) & Size of test suite (loc) \\
+		Project name & Version & Project size & Test-suite size & Number of tests \\
 		\midrule
-		assertj-core & cb2829 & 135k & 241k \\
-		commons-collections & 242918 & 59k & 45k \\
-		commons-lang & 6b3f25 & 51k & 40k \\
-		commons-math & 649b13 & 148k & 98k \\
-		jopt-simple & 5a1d72 & 1.7k & 2.7k \\
-		jsoup & 89580c & 18k & 12k \\
+		assertj-core & cb2829 & 135k & 241k &3578 \\
+		commons-collections & 242918 & 59k & 45k & 238 \\
+		commons-lang & 6b3f25 & 51k & 40k & 181 \\
+		commons-math & 649b13 & 148k & 98k & 438 \\
+		jopt-simple & 5a1d72 & 1.7k & 2.7k & 145 \\
+		jsoup & 89580c & 18k & 12k & 52\\
 		\bottomrule
 	\end{tabular}
 \end{table}
+
+%CANDO: include number of test cases?
 
 \section{Study Setup}
 
@@ -72,11 +76,11 @@ during the default test run:
 \begin{table}[htpb]
 	\caption[]{}\label{tab:excluded} %Project name, excluded tests
 	\centering
-	\begin{tabular}{l l}
+	\begin{tabular}{l | p{10cm}}
 		\toprule
 		Project name & Test classes excluded \\
 		\midrule
-		assertj-core & BDDSoftAssertionsTest, SoftAssertionsTest, SoftAssertions\_overriding\_afterAssertionErrorCollected\_Test, SoftAssertionsErrorsCollectedTest|SoftAssertionsMultipleProjectsTest, SoftAssertions\_setAfterAssertionErrorCollected\_Test, AssertJMultipleFailuresError\_getMessage\_Test \\
+		assertj-core & BDDSoftAssertionsTest, SoftAssertionsTest, SoftAssertions\_overriding\_afterAssertionErrorCollected\_Test, SoftAssertionsErrorsCollectedTest, SoftAssertionsMultipleProjectsTest, SoftAssertions\_setAfterAssertionErrorCollected\_Test, AssertJMultipleFailuresError\_getMessage\_Test \\
 		commons-collections & BulkTest \\
 		commons-lang & FieldUtilsTest \\
 		commons-math & FastMathTest, EvaluationTestValidation \\

@@ -89,11 +89,125 @@ After computing the k clusters, FAST++ returns the vectors closest to
 the centers of the k clusters (i.e. the tests most representatitve for
 those clusters).
 
-\subsubsection{FAST-all}
-
 \subsubsection{FAST-CS}
 
+The FAST-CS algorithm has the same preparation phase as FAST++: test
+cases are vectorized, and the resulting vectors are projected into a
+lower-dimensional vectorspace.
+
+The second phase is different, as it attempts to cluster the set of
+points by finding a coreset, a set of points that approximate the shape
+of the set of vectors.
+
+%CANDO: find a source for the first description of coreset
+
+This is achieved by importance sampling: "All points have nonzero
+probability of being sampled, but points that are far from the center
+of the dataset (potentially good centers for clustering) are sampled
+with higher probability."
+
+The metric used for importance sampling is as follows:
+
+$$
+	Q(t) \leftarrow \frac{1}{2|T|}+\frac{d(P(t),\mu)^2}{\sum_{t' \in P}d(P(t'),\mu)^2}
+$$
+
+where $\mu$ is the mean of the whole dataset, $T$ is the test suite,
+$d$ is a distance metric (in this case the Euclidean metric), and $P$
+is the random projection of the test suite.
+
+The points are sampled without replacement until either the coverage is
+adequate or the budget has been reached.
+
 \subsubsection{FAST-pw}
+
+FAST-pw was first introduced in \cite{miranda2018fast} as a test suite
+priorization algorithm. It attempts to maximize the Jaccard distance
+between early test cases (the Jaccard distance between two sets $A$
+and $B$ being $JD(A, B)=1-\frac{|A \cap B|}{|A \cup B|}$).
+
+The algorithm uses three different concepts: \textit{shingling},
+\textit{minhashes} (and \textit{minhash signatures}), and
+\textit{locality-sensitive hashing}.
+
+\textit{Shingling} is used as a method for transforming a test case into
+a set, and is therefore only used in the case where coverage information
+is not available. Given a string of $S$, a k-shingle is the set of all
+substrings of $S$ of length k. For example, the 7-shingle of "bananas"
+is just the set $\{"bananas"\}$, the 5-shingle of "bananas" is $\{"banan",
+"anana", "nanas"\}$. \cite{miranda2018fast} states that "if two documents
+are similar they will have many shingles in common".
+
+However, as \cite{miranda2018fast} observes, sets of shingles (or of
+coverage information) can be very large.
+
+\textit{Minhashing} is a method for deriving compact representations of
+sets. This is achieved by creating a list of hash functions $H=\{h_1,
+\dots h_k\}$, and for each test case $T$ (a set of shingles or of
+coverage information) calculating the list $[\hbox{arg min}_{t \in T}
+h_1(t), \dots \hbox{arg min}_{t \in T} h_k(t)]$ (which is called the
+signature of the set). Less formally, the minhash at position i is the
+minimal value of the hash function for any element of the set.
+
+The Jaccard distance of two sets can be estimated by calculating the
+number of positions on which the minhash signatures $s_1$, $s_2$ of the
+two sets agree:
+
+$$\hbox{EstimateJD}(s_1,s_2)=1-\frac{|\{i|i\in 1..k, s_1(i)=s_2(i)\}|}{|s_1|}$$
+
+\textit{Locality-sensitive hashing} is a further technique to make
+runtimes shorter. Let $S=\{s_1, \dots s_n\}$ be a set of minhash
+signatures of all tests. Now a matrix $M \in \mathbb{R}^{n \times k}$
+is created, by using the minhash signatures as columns. The rows of this
+matrix are now divided into bands of length $r$. Example:
+
+% CANDO: add matrix stuff, LSHs, lines between buckets, row indicators
+% See sheet notes
+
+$$
+\matrix{
+	s_1 & s_2 & s_3 & s_4 \cr
+	9 & 4 & 1 & 1 \cr
+	3 & 8 & 0 & 5 \cr
+	0 & 2 & 4 & 5 \cr
+	0 & 4 & 2 & 9 \cr
+	2 & 7 & 6 & 3 \cr
+	1 & 4 & 0 & 6 \cr
+}
+$$
+
+When the hash of the values in different columns of two bands is the
+same (the two minhashes are in the same bucket), the two test cases the
+minhashes belong to are added to the confusingly named candidate set
+(tests in the candidate set are excluded from selection). The candidate
+set contains tests that have a Jaccard distance over a below threshold s,
+where $s \approx 1-(r/n)^{1/r}$.
+
+The algorithm follows different steps:
+
+1. Calculate the minhashes \\
+2. Calculate the candidate set $C_s$ \\
+3. Select a test from the set of remaining tests $T \backslash C_s$ \\
+4. Remove that test from the remaining tests $T$ and add it to the set of selected tests $S$ \\
+5. If the condition is not fulfilled (budget not fulfilled in the inadequate case, coverage not achieved in the adequate case), go to step 2 \\
+6. Return $S$ \\
+
+%CANDO: formulate less confusingly?
+
+The function that selects the test case from the remaining test cases
+maximizes the Jaccard distance of the returned test and the so far
+selected test cases $S$ (where $M$ is a function that produces minhashes, and Estimate:
+
+$$ \hbox{arg max}_{c \in T \backslash C_s} \hbox{EstimateJD}(M(S), M(c))$$
+
+\subsubsection{FAST-all}
+
+FAST-all is very similar to FAST-pw. The only difference lies in the
+selection function: While FAST-pw chooses based on Jaccard distance,
+FAST-all selects all of $T \backslash C_s$, simply choosing all
+non-candidate tests. This is a special case for the originally described
+algorithm, which allowed to select a random sample from the non-candidate
+tests with a given size ($one$, $log$, $sqrt$, $all$).
 
 \subsection{Random Selection}
 

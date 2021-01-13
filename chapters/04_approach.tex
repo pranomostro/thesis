@@ -278,4 +278,35 @@ def random_selection_adequate(input_file, B=0):
 
 \subsection{Greedy Algorithm}
 
-$\frac{1}{2}$ a page
+The greedy algorithm used is the greedy additional algorithm from
+\cite{rothermel2001prioritizing}: In each iteration, it selects the test
+case with the highest number of yet uncovered program entities.
+
+function ganext(RS, TS, cov): \\
+	alreadycov:=$\bigcup_{t \in RS} \hbox{cov}(t)$ \\
+	return $\hbox{arg max}_{t \in TS} |cov(t)\backslash alreadycov$ \\*
+
+In the adequate case, we select greedily until we achieve complete
+coverage:
+
+function gaadequate(TS, cov): \\
+	RS=$\emptyset$ \\
+	allcov:=$\bigcup_{t \in TS} \hbox{cov}(t)$ \\
+	while $\bigcup_{t \in RS} \hbox{cov}(t)$!=allcov: \\
+		s:=ganext(RS, TS, cov) \\
+		TS:=$TS \backslash \{s\}$ \\
+		RS:=$RS \cup \{s\}$ \\
+	return RS \\*
+
+In the budget case, we instead select greedily $B$ times.
+
+function gabudget(TS, cov, B): \\
+	RS=$\emptyset$ \\
+	allcov:=$\bigcup_{t \in TS} \hbox{cov}(t)$ \\
+	$B$ times \\
+		s:=ganext(RS, TS, cov) \\
+		TS:=$TS \backslash \{s\}$ \\
+		RS:=$RS \cup \{s\}$ \\
+	return RS \\*
+
+%CANDO: convert to pseudocode

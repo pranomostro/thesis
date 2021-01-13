@@ -3,10 +3,33 @@
 
 \chapter{Terms and Definitions}\label{chapter:terms}
 
-$\frac{1}{2}$ a page
+This paper uses some terms and abbreviations that are common in the
+literature on test suite reduction, but not used much elsewhere.
 
-Candidates:
+The System Under Test (SUT) is a software system being tested using a
+test suite.
 
-SUT (System under Test)
-TSR (Test Suite Reduction)
-FDL (Fault Detection Loss)
+The Test Suite Reduction (TSR) is a metric that evaluates the magnitude
+of the reduction of a test suite. Given a test suite $T=\{t_1, \dots t_n\}$ and
+a reduced test suite $T' \subset T$, the TSR of the test suite is determined
+using the formula
+
+$$\hbox{TSR}(T, T')=\frac{|T|-|T'|}{|T|}$$
+
+Everything else equal, higher values for TSR are better.
+
+The abbreviation TSR also sometimes stands for the technique of test
+suite reduction, i.e. the permanent removal of redundant test cases
+from a test suite. In this text, "TSR" will only stand for the metric,
+and the technique will be written out as "test suite reduction".
+
+The Fault Detection Loss (FDL) is a metric that evaluates the amount of
+faults detected by a reduced test suite. Let $F$ be the faults detected
+by $T$, and $F'$ be the faults detected by $T'$, then the fault detection
+loss is calculated as such:
+
+$$\hbox{FDL}(F, F')=\frac{|F|-|F'|}{|F|}$$
+
+In general, lower FDL values are better. A related metric (e.g. used in
+\cite{khan2016survey} or \cite{yoo2012regression}) is the Fault Detection
+Effectiveness (FDE), defined as $1-FDE(F, F')$.

@@ -55,8 +55,9 @@ $$ \forall T'' \in S_{T}: T' \neq T'' \land \forall i \in 1..n: |\bigcup_{j=1}^{
 %CANDO Maybe use APFD here instead?
 
 Test case priorization subsumes test suite reduction: Given an ordering
-$T'$ of test cases, it is easy to select the first $o$ test cases that
-together fulfill all requirements.
+$T'$ of test cases, it is easy to select the first $B$ test cases in
+the adequate scenario or the first $i$ test cases that together fulfill
+all requirements.
 
 \section{Test Case Selection}
 
@@ -79,8 +80,6 @@ Test suite reduction, on the other hand, attempts to permanently reduce
 the size of the test suite by removing redundant tests. The distinguishing
 feature from test case selection is that it doesn't take into account
 recent changes.
-
-One can now distinguish two cases:
 
 %CANDO: create subsubsections here?
 
@@ -126,8 +125,9 @@ and Hybrid methods.
 \subsection{Greedy Selection}
 
 Greedy approaches, first introduced by \cite{rothermel2001prioritizing}
-(in the context of test case priorization), work by selecting test cases
-based on a coverage criterion $C=\{c_1, \dots, c_{\hbox{ncov}}\}$.
+(in the context of test case priorization), work by selecting test
+cases based on test requirements $R=\{r_1, \dots, r_{m}\}$ (mostly
+statement/branch/function coverage).
 
 \cite{khan2018systematic} describe the fully general case of greedy-based
 test suite reduction, in which a test case is first selected using
@@ -140,10 +140,42 @@ heuristic (choosing the test with the highest amount of coverage from
 the test set) and the additional heuristic (choosing the test with the
 highest amount of coverage yet not covered by the reduced test suite).
 
+Greedy approaches to test suite reduction can also include approaches
+based on integer linear programming, such as in %CANDO
+
+%CANDO: add further examples of papers using this method
+
 \subsection{Clustering}
 
+Clustering approaches to test suite reduction attempt to maximize
+a distance metric on the resulting test suite. This is achieved by
+separating $T$ into disjunctive subsets using a clustering algorithm
+so that the difference between two subsets doesn't fall under a given %CANDO: really? Is that it?
+threshold, and then sampling test cases from the subsets (in the optimal
+case one representative test case per subset).
 
+This method doesn't need the test requirements to be available: many
+approaches (for example from the FAST family examined in this paper
+\cite{miranda2018fast}) calculate the similarity of two test cases using
+the string of the test case's source code. However, those approaches can
+only be inadequate: The test case strings give no information about when
+the requirements are completely fulfilled.
+
+Examples of clustering-based approaches to test suite reduction are
+of course the FAST algorithms from \cite{cruciani2019scalable}
+and \cite{miranda2018fast}, but also the ART family from
+\cite{chen2010adaptive} and CANDO.
+
+%CANDO add further examples of papers using this method
 
 \subsection{Searching}
+
+Search-based methods for test suite reduction evaluate subsets of $T$
+using a cost and/or effectiveness measure, and then select the subset
+that scores best on these measures. Similar to clustering approaches,
+these subsets can be generated using a similarity measure.
+
+Methods for test suite reduction based on searching are presented in
+\cite{coutinho2013test}, and CANDO.
 
 \subsection{Hybrids}

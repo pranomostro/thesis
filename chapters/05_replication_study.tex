@@ -1,24 +1,51 @@
 % !TeX root = ../main.tex
 % Add the above to each chapter to make compiling the PDF easier in some editors.
 
-\chapter{Evaluation}\label{chapter:evaluation}
+\chapter{Replication Study}\label{chapter:replication_study}
+
+%CANDO: where to put the information about bugs discovered in the original code?
 
 17 pages
 
 \section{Research Questions}
 
-\paragraph{Research Question 1: Does the Relative Effectiveness of the Different Algorithms Replicate the Results in \cite{cruciani2019scalable}?}
+We define five %CANDO: change the number if we add/drop research questions
+research questions, adapting three from \cite{cruciani2019scalable}
+and adding two further questions.
 
-\subparagraph{Research Question 1.1: Does Their Relative Effectiveness in TSR Replicate the Findings
-in \cite{cruciani2019scalable}?}
+\subparagraph{Research Question 1.1: Can the relative effectiveness in TSR be replicated on other study objects?}
 
-\subparagraph{Research Question 1.2: Does Their Relative Effectiveness in FDL Replicate the Findings in \cite{cruciani2019scalable}?}
+We care about the size of the reduced test suite, therefore it is valuable
+by how much test suites are reduced. We use the TSR metric (defined
+in terms and definitions) to evaluate the magnitude of the reduction.
+Using the TSR is mostly useful in adequate scenarios, since in inadequate
+scenarios, the size of the reduced test suite relative to the original
+test suite is fixed. We rank the algorithms using a Kruskal-Wallis test,
+taken from \cite{cruciani2019scalable}
 
-\paragraph{Research Question 2: Does the Relative Runtime Performance of the Different Algorithms Replicate the Results in \cite{cruciani2019scalable}?}
+\subparagraph{Research Question 1.2: Can the relative effectiveness in FDL be replicated on other study objects?}
 
-\paragraph{Research Question 3: How Much Better Than Random Selection are Specialized Algorithms?}
+\cite{rothermel2002empirical} finds that test suite reduction can severely
+compromise fault detection capability. To test whether this is the case,
+the FDL metric is used to examine the fault detection capabilities
+for the algorithms given new data. We also rank the methods using a
+Kruskal-Wallis test.
 
-\paragraph{(Possibly) Research Question 4: Do the Results in \cite{cruciani2019scalable} Replicate with the Original Test Data?}
+\paragraph{Research Question 2: Can the relative runtime performance of the different algorithms be replicated?}
+
+Due to using different datasets (of both larger and smaller size), the
+absolute runtimes of the different test suite reduction methods can be
+expected to be different from the original runs. However, the ordering of
+the methods according to runtime is expected to be the same (that is, if
+algorithm $X$ was faster than algorithm $Y$ on the old data, we can expect
+algorithm $X$ to also be faster than algorithm $Y$ on the new data).
+
+Again, we use the Kruskal-Wallis test to rank methods after their
+runtime performance.
+
+\paragraph{Research Question 3: How much better than random selection are specialized algorithms?}
+
+\paragraph{(Possibly) Research Question 4: Can the results be reproduced with the original test data?}
 
 \section{Study Design}
 
@@ -123,11 +150,74 @@ did find faults.
 
 \section{Results}
 
+To obtain the results, we executed the code originally written for
+\cite{cruciani2019scalable} with the newly generated test data.
+
 \subsection{Research Questions}
 
 \paragraph{Research Question 1.1}
 
+\begin{table}[htpb]
+	\caption[TSR statistical results, adequate]{Different variables relating to TSR (mdn is the median, $\sigma$ being the standard deviation, and $\delta$ being the ranking in the Kruskal-Wallis test)}\label{tsr_stats}
+	\centering
+	\begin{tabular}{l l l l}
+	Approach & mdn & $\sigma$ & $\delta$ \\
+	\midrule
+	ART-D & 0.174 & 0.09 & \\
+	ART-F & 0.003 & 0.0157 & \\
+	FAST++ & 0.34 & 0.135 & \\
+	FAST-all & 0.218 & 0.078 & \\
+	FAST-CS & 0.32 & 0.121 & \\
+	FAST-pw & 0.323 & 0.119 & \\
+	GA & 0.391 & 0.149 & \\
+	RS & 0.002 & 0.016 & \\
+	\bottomrule
+	\end{tabular}
+\end{table}
+
 \paragraph{Research Question 1.2}
+
+%CANDO: merge tables
+
+\begin{table}[htpb]
+	\caption[FDL statistical results, budget]{Different variables relating to FDL (mdn is the median, $\sigma$ being the standard deviation, and $\delta$ being the ranking in the Kruskal-Wallis test)}\label{tsr_stats}
+	\centering
+	\begin{tabular}{l l l l}
+	Approach & mdn & $\sigma$ & $\delta$ \\
+	\midrule
+	ART-D & 0.936 & 0.347 & \\
+	ART-F & 0.949 & 0.357 & \\
+	FAST++ & 0.936 & 0.35495 & \\
+	FAST-all & 0.937 & 0.349 & \\
+	FAST-CS & 0.941 & 0.357 & \\
+	FAST-pw & 0.932 & 0.355 & \\
+	GA & 0.705 & 0.334 & \\
+	RS & 0.975 & 0.11 & \\
+	\bottomrule
+	\end{tabular}
+\end{table}
+
+\begin{table}[htpb]
+	\caption[FDL statistical results, adequate]{Different variables relating to FDL ($\mu$ is the mean, mdn is the median, $\sigma$ being the standard deviation, and $\delta$ being the ranking in the Kruskal-Wallis test)}\label{tsr_stats}
+	\centering
+	\begin{tabular}{l l l l l}
+	Approach & $\mu$ & mdn & $\sigma$ & $\delta$ \\
+	\midrule
+	ART-D & 0.002 & 0.0 & 0.01 \\
+	ART-F & 0.0005 & 0.0 & 0.007 \\
+	FAST++ & 0.011 & 0.0 & 0.021 \\
+	FAST-all & 0.003 & 0.0 & 0.006 \\
+	FAST-CS & 0.01 & 0.0 & 0.02 \\
+	FAST-pw & 0.007 & 0.0 & 0.011 \\
+	GA & 0.014 & 0.0 & 0.024 \\
+	RS & 0.0005 & 0.0 & 0.007 \\
+	\bottomrule
+	\end{tabular}
+\end{table}
+
+We include the mean in the descriptive statistics to illustrate that
+while the median adequate reduction has no fault detection loss, it can
+nonetheless still occur.
 
 \paragraph{Research Question 2}
 

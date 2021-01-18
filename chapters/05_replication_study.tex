@@ -45,18 +45,31 @@ runtime performance.
 
 \paragraph{Research Question 3: How much better than random selection are specialized algorithms?}
 
+\cite{khan2018systematic} recommends a comparison of the examined
+technique to a simple baseline. We use their recommendation (random
+selection) and compare the other approaches to how well they fare against
+random selection on runtime, TSR and FDL.
+
 \paragraph{(Possibly) Research Question 4: Can the results be reproduced with the original test data?}
 
 \section{Study Design}
 
 \section{Study Objects}
 
-\section{Selecting Projects}
-
 The code bases and test suites selected for this study were small to
 medium sized open-source Java projects. They all used either JUnit
 4 or JUnit 5 as their testing framework, and the tool Maven %CANDO: right capitalization?
 for building and testing. We used the latest version.
+
+We selected java projects because tools for generating coverage
+information and mutation-test data using Maven are available and
+comparatively easy to use. We decided to use open-source projects to make
+checking our generated data easier, as well as for availability reasons.
+
+The selected projects are both under development and in use, which makes
+our results relevant to real-life systems.
+
+\section{Selecting Projects}
 
 The projects used, their versions and size are presented in table CANDO
 (project and test suite size are in lines of code, the version is the
@@ -74,7 +87,7 @@ The projects used, their versions and size are presented in table CANDO
 		commons-lang & 6b3f25 & 51k & 40k & 181 \\
 		commons-math & 649b13 & 148k & 98k & 438 \\
 		jopt-simple & 5a1d72 & 1.7k & 2.7k & 145 \\
-		jsoup & 89580c & 18k & 12k & 52\\
+		jsoup & 89580c & 18k & 12k & 52 \\
 		\bottomrule
 	\end{tabular}
 \end{table}
@@ -150,15 +163,44 @@ did find faults.
 
 \section{Results}
 
-To obtain the results, we executed the code originally written for
-\cite{cruciani2019scalable} with the newly generated test data.
+To obtain the results, we used the code from \cite{cruciani2019scalable},
+and applied the test suite reduction algorithms to new test data
+(i.e. black-box test suite files and coverage information of 6 open source
+projects) after minimal modification. These modifications were as follows:
+
+We added a further algorithm for the random selection of test cases.
+
+We fixed three bugs we found in the code: an off-by-one error in loading
+coverage information, a bug where in small test suites sometimes the
+candidate set would be empty, and a mistake where a a measured variable
+was not reported correctly for FAST-all. The changes made to the source
+code can be found at CANDO.
+
+In the budget scenario, we considered budgets between 1\% and 30\%, with
+a step increase of 1\%. We considered only line coverage (functionally
+equivalent to statement coverage), and performed 50 measurements of
+FDL, TSR, preparation and reduction time.
+
+In the adequate scenario, we also considered only line coverage, and
+made 50 measurements of preparation time, coverage preparation time,
+and reduction time.
+
+We did not replicate the large-scale scenario.
+
+All measurements were performed under a Ubuntu 20.04 64-bit system,
+using 6 AMD® Ryzen 5 4500u with radeon graphics processors, and 7.2
+GiB of RAM available.
 
 \subsection{Research Questions}
 
 \paragraph{Research Question 1.1}
 
+\autoref{tab:tsr_stats} shows the descriptive statistical results
+(median, standard deviation and ordering for the Kruskal-Wallis test)
+in the adequate case.
+
 \begin{table}[htpb]
-	\caption[TSR statistical results, adequate]{Different variables relating to TSR (mdn is the median, $\sigma$ being the standard deviation, and $\delta$ being the ranking in the Kruskal-Wallis test)}\label{tsr_stats}
+	\caption[TSR statistical results, adequate]{Different variables relating to TSR (mdn is the median, $\sigma$ being the standard deviation, and $\delta$ being the ranking in the Kruskal-Wallis test)}\label{tab:tsr_stats}
 	\centering
 	\begin{tabular}{l l l l}
 	Approach & mdn & $\sigma$ & $\delta$ \\
@@ -177,40 +219,43 @@ To obtain the results, we executed the code originally written for
 
 \paragraph{Research Question 1.2}
 
+\autoref{tab:fdl_stats} shows the descriptive statistics (mean, median,
+standard deviation, and ordering according to the Kruskal-Wallis test)
+for the FDL of different algorithms.
+
 %CANDO: merge tables
 
 \begin{table}[htpb]
-	\caption[FDL statistical results, budget]{Different variables relating to FDL (mdn is the median, $\sigma$ being the standard deviation, and $\delta$ being the ranking in the Kruskal-Wallis test)}\label{tsr_stats}
+	\caption[FDL statistical results]{Different variables relating to FDL ($\mu$ being the mean, mdn the median, $\sigma$ the standard deviation, and $\delta$ the ranking in the Kruskal-Wallis test)}\label{tab:fdl_stats}
 	\centering
-	\begin{tabular}{l l l l}
-	Approach & mdn & $\sigma$ & $\delta$ \\
+	\begin{tabular}{c | c | c}
 	\midrule
-	ART-D & 0.936 & 0.347 & \\
-	ART-F & 0.949 & 0.357 & \\
-	FAST++ & 0.936 & 0.35495 & \\
-	FAST-all & 0.937 & 0.349 & \\
-	FAST-CS & 0.941 & 0.357 & \\
-	FAST-pw & 0.932 & 0.355 & \\
-	GA & 0.705 & 0.334 & \\
-	RS & 0.975 & 0.11 & \\
-	\bottomrule
-	\end{tabular}
-\end{table}
-
-\begin{table}[htpb]
-	\caption[FDL statistical results, adequate]{Different variables relating to FDL ($\mu$ is the mean, mdn is the median, $\sigma$ being the standard deviation, and $\delta$ being the ranking in the Kruskal-Wallis test)}\label{tsr_stats}
-	\centering
-	\begin{tabular}{l l l l l}
-	Approach & $\mu$ & mdn & $\sigma$ & $\delta$ \\
+	Budget & Adequate \\
 	\midrule
-	ART-D & 0.002 & 0.0 & 0.01 \\
-	ART-F & 0.0005 & 0.0 & 0.007 \\
-	FAST++ & 0.011 & 0.0 & 0.021 \\
-	FAST-all & 0.003 & 0.0 & 0.006 \\
-	FAST-CS & 0.01 & 0.0 & 0.02 \\
-	FAST-pw & 0.007 & 0.0 & 0.011 \\
-	GA & 0.014 & 0.0 & 0.024 \\
-	RS & 0.0005 & 0.0 & 0.007 \\
+	{\begin{tabular}{l | l | l | l}
+		Approach & mdn & $\sigma$ & $\delta$ \\
+		\midrule
+		ART-D & 0.936 & 0.347 & \\ \hline
+		ART-F & 0.949 & 0.357 & \\ \hline
+		FAST++ & 0.936 & 0.35495 & \\ \hline
+		FAST-all & 0.937 & 0.349 & \\ \hline
+		FAST-CS & 0.941 & 0.357 & \\ \hline
+		FAST-pw & 0.932 & 0.355 & \\ \hline
+		GA & 0.705 & 0.334 & \\ \hline
+		RS & 0.975 & 0.11 & \\
+	\end{tabular}} &
+	{ \begin{tabular}{l | l | l | l | l}
+		Approach & $\mu$ & mdn & $\sigma$ & $\delta$ \\
+		\midrule
+		ART-D & 0.002 & 0.0 & 0.01 \\ \hline
+		ART-F & 0.0005 & 0.0 & 0.007 \\ \hline
+		FAST++ & 0.011 & 0.0 & 0.021 \\ \hline
+		FAST-all & 0.003 & 0.0 & 0.006 \\ \hline
+		FAST-CS & 0.01 & 0.0 & 0.02 \\ \hline
+		FAST-pw & 0.007 & 0.0 & 0.011 \\ \hline
+		GA & 0.014 & 0.0 & 0.024 \\ \hline
+		RS & 0.0005 & 0.0 & 0.007 \\
+	\end{tabular}} \\
 	\bottomrule
 	\end{tabular}
 \end{table}
@@ -225,18 +270,47 @@ nonetheless still occur.
 
 \paragraph{(Possibly) Research Question 4}
 
-\subsection{Running Time}
-
 \section{Discussion}
 
 Comparison to ''Scalable Approaches to Test Suite Reduction''
 
 \section{Threats to Validity}
 
-\subsection{Conclusion Validity}
-
-\subsection{Internal Validity}
+Although we attempted to prevent it, the results we obtained might suffer
+from threats to validity.
 
 \subsection{Construct Validity}
 
+Construct validity considers whether the methods are adequate to answer
+the research questions posed. As in the original paper, we used FDL
+and TSR as standard metrics, and reported the mean, median and standard
+deviation of the data as standard statistical properties of the generated
+data.
+
+\subsection{Internal Validity}
+
+The results we obtained might not be due to actual differences in
+the performance of the different methods, but due to other factors,
+such as the usage of the computer used for gathering data for other
+purposes during that time. To migitate these effects, we performed every
+measurement 50 times, and abstained from using the computer during the
+time of gathering data.
+
+\subsection{Conclusion Validity}
+
+Threats to conclusion validity are present when false positives are
+found due to considering many different test suite reduction methods
+and variables. This paper performs 4 %CANDO: update
+statistical tests, thus we judge a significance level of 5\% to be
+sufficient.
+
 \subsection{External Validity}
+
+The projects we selected are all small to medium-sized projects,
+and therefore the results we obtained might not generalize to
+large-scale software systems. While one of the projects we obtained
+test data from (assertj-core) was larger than the projects examined in
+\cite{cruciani2019scalable}, it was not analyzed separately from the
+other data. However, since the projects we used were of similar size
+as the ones in \cite{cruciani2019scalable}, and our interest was to
+replicate their findings, we regard this consideration as less relevant.

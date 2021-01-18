@@ -170,12 +170,30 @@ and \cite{miranda2018fast}, but also the ART family from
 
 \subsection{Searching}
 
-Search-based methods for test suite reduction evaluate subsets of $T$
-using a cost and/or effectiveness measure, and then select the subset
-that scores best on these measures. Similar to clustering approaches,
-these subsets can be generated using a similarity measure.
+Search-based methods for test suite reduction evaluate subsets
+$S=\{s_1, \dots s_m\} \subset \mathcal{P}(T)$ of $T$ using a cost
+and/or effectiveness measure $F: S \rightarrow \mathbb{R}$, and then
+select the subset of tests that scores best on these measures. Because
+setting $S:=\mathcal{P}(T)$ results in an exponential search space,
+search-based approaches are often combined with other methods – for
+example generating the subsets by applying clustering methods using a
+similarity measure.
+
+$$T_s=\hbox{arg max}_{s_i \in S} F(s_i)$$
 
 Methods for test suite reduction based on searching are presented in
 \cite{coutinho2013test}, and CANDO.
 
-\subsection{Hybrids}
+\subsection{Hybrids and Other Methods}
+
+Hybrid methods for test suite reduction combine different approaches
+to test suite reduction to achieve greater performance or speed up
+the reduction process. For example, search-based test suite reduction
+approaches can be enhanced by creating the subsets $S$ of $T$ by applying
+different clustering algorithms.
+
+Other methods that can not be easily classified into any of those three
+categories have been proposed in the literature, for example Integer
+Linear Programming-based solutions, which are used for multi-objective
+optimization (e.g. optimizing for high coverage, low running times and
+low memory usage of tests). % CANDO: [citations]

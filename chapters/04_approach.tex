@@ -3,8 +3,6 @@
 
 \chapter{Approach}\label{chapter:approach}
 
-8 pages
-
 \section{Replicating ''Scalable Approaches for Test Suite Reduction''}
 
 This paper attempts to replicate the findings in
@@ -16,8 +14,6 @@ new algorithms to the FAST family.
 We use the code from the original paper, published online at
 \url{https://github.com/ICSE19-FAST/FAST-R}, with some slight
 modifications to fix faults discovered in the original code.
-
-1 page
 
 \section{Implemented Algorithms}
 
@@ -36,8 +32,6 @@ as a baseline."
 This paper also includes a random selection algorithm as a baseline,
 as recommended by \cite{khan2018systematic}.
 
-7 pages
-
 \subsection{FAST}
 
 The FAST family is a clustering-based family of algorithms for test
@@ -46,8 +40,6 @@ suite reduction (\cite{miranda2018fast}, \cite{cruciani2019scalable}).
 The FAST family is a collection of 4 clustering based TSR algorithms
 that work both with adequate and inadequate TSR problems, especially
 for large test suites.
-
-4 pages
 
 \subsubsection{FAST++}
 
@@ -185,12 +177,14 @@ where $s \approx 1-(r/n)^{1/r}$.
 
 The algorithm follows different steps:
 
-1. Calculate the minhashes \\
-2. Calculate the candidate set $C_s$ \\
-3. Select a test from the set of remaining tests $T \backslash C_s$ \\
-4. Remove that test from the remaining tests $T$ and add it to the set of selected tests $S$ \\
-5. If the condition is not fulfilled (budget not fulfilled in the inadequate case, coverage not achieved in the adequate case), go to step 2 \\
-6. Return $S$ \\
+\begin{itemize}
+	\item[] 1. Calculate the minhashes
+	\item[] 2. Calculate the candidate set $C_s$
+	\item[] 3. Select a test from the set of remaining tests $T \backslash C_s$
+	\item[] 4. Remove that test from the remaining tests $T$ and add it to the set of selected tests $S$
+	\item[] 5. If the condition is not fulfilled (budget not fulfilled in the inadequate case, coverage not achieved in the adequate case), go to step 2
+	\item[] 6. Return $S$
+\end{itemize}
 
 %CANDO: formulate less confusingly?
 
@@ -214,67 +208,82 @@ tests with a given size ($one$, $log$, $sqrt$, $all$).
 $\frac{1}{2}$ a page
 
 \cite{khan2018systematic} gives 12 recommendations on how to execute and
-evaluate test suite reduction experiments. \cite{cruciani2019scalable}
-follows 11 out of these 12 analyses, but does not include a simple
-alternative baseline, such as random selection from the set of tests.
+evaluate test suite reduction experiments. One of them is to include a
+baseline algorithm to compare the other algorithms to, such as random
+selection.
 
-This analysis adds an algorithm that randomly selects tests from the test
-set.
-In the inadequate case, it simply chooses $B$ random tests from the
-test set:
+In the inadequate case, random selection simply chooses $B$ random tests
+from the test set:
 
-%TODO: perhaps make these just pseudocode? Or leave out completely?
+function rsbudget(TS, B): \\
+	return randomsubset(TS, B)
 
-\begin{figure}[htpb]
-\centering
-\begin{tabular}{c}
-\begin{lstlisting}[language=python]
-def random_selection(input_file, B=0):
-	TS = loadTestSuite(input_file)
-	sel=random.sample(list(range(1,len(TS)+1)), min(B, len(TS)))
-	return sel
-\end{lstlisting}
-\end{tabular}
-\caption[Random budget selection]{The algorithm for selecting $B$ tests from the test suite randomly}\label{fig:random-budget-listing}
-\end{figure}
+In the adquate case, a random element is removed from the original test
+suite and added to the selected tests until the set of selected tests
+fulfills all requirements (in this case, covers all coverable lines):
 
-In the adequate case, random selection removes a random test from the set
-of tests and adds it to the selected tests until the coverage is adequate.
-
-\begin{figure}[htpb]
-\centering
-\begin{tabular}{c}
-\begin{lstlisting}[language=python]
-def random_selection_adequate(input_file, B=0): 
-	TS = loadTestSuite(input_file) 
-
-	selcov=set() 
-	allcov=set() 
-	for k in list(TS.keys()): 
-		allcov=allcov.union(TS[k]) 
-
-	tests=set(range(1, len(TS)+1)) 
-	sel=list() 
-
-	while len(tests)>0 and len(allcov.difference(selcov))>0:
-		selected=random.sample(tests, 1)[0] 
-		sel.append(selected) 
-		tests.remove(selected) 
-		selcov=selcov.union(TS[selected]) 
-
-	return sel
-\end{lstlisting}
-\end{tabular}
-\caption[Random adequate selection]{The algorithm for selecting tests from the test suite randomly, adequate case}\label{fig:random-adequate-listing}
-\end{figure}
+function rsadequate(TS, cov, B): \\
+	RS:=$\emptyset$ \\
+	allcov:=$\bigcup_{t \in TS} \hbox{cov}(t)$ \\
+	while $\bigcup_{t \in RS} \hbox{cov}(t)$!=allcov: \\
+		s:=selectrandom(TS) \\
+		TS:=$TS \backslash \{s\}$ \\
+		RS:=$RS \cup \{s\}$
+	return RS
 
 \subsection{Adaptive Random Testing}
 
-2 pages
+The second family of algorithms compared to in this paper is the ART
+(Adaptive Random Testing) family introduced in \cite{jiang2009adaptive}
+and elaborated on in \cite{chen2010adaptive}. These algorithms were
+originally developed for test case priorization (as an alternative
+to random selection), but can be trivially converted into test suite
+reduction algorithms by applying the priorization procedure and then
+either selecting the first $B$ test cases or so many that they fulfill
+all requirements.
 
 \subsubsection{ART-D}
 
+The ART-D algorithm was presented in \cite{jiang2009adaptive} (although
+there only called ART). It starts with a set of tests $T$ and an empty
+sequence of prioritized tests $P$. The algorithm works in two stages:
+
+First, tests are selected from $T$ and added to a candidate set $C$
+as long as new tests add new coverage information to $C$ (this will not
+result in the joint coverage of tests in $C$ being the joint coverage of
+tests in $T$). This results in the size of candidate sets being variable
+during exection.
+
+Second, a test $c$ is selected from $C$ and appended to $P$. The
+criterion for selecting $c$ is to maximize the distance between all $p
+\in P$ and $c$; \cite{jiang2009adaptive} use the Jaccard distance in
+coverage and examine different methods for comparing the sequence of
+priorizited test cases to the tests in the candidate set (maximizing
+the maximum/average/minimum distance between the selected test case and
+the already priorized cases (and conclude that maximizing the minimal
+distance might be the best strategy)).
+
+The selected test case is appended to the sequence of priorizited test
+cases and removed from $T$. Unless $T$ is now empty, the first stage is
+executed again.
+
 \subsubsection{ART-F}
+
+The ART-F algorithm was introduced in \cite{zhou2012fault}. It
+is similar in structure to ART-D, but uses the Manhattan distance
+instead of the Jaccard distance, and frequency information instead
+of coverage information, as well as having a fixed-size candidate
+set. Frequency information is information about how often a part of the
+SUT is executed by a test. However, in the presented experiment, since
+frequency information is not available, coverage information is used as
+a place-holder, where a test covering a statement is treated as the test
+executing tha statement with frequency 1. The Manhattan distance of two
+sequences of frequency information is calculated as such:
+
+$$\hbox{MD}(u, v)=\sum_{i=1}^{n}|u_i-v_v|$$
+
+The stages in ART-F are the same as in ART-D, and it also returns a
+sequence of prioritized test cases.
 
 \subsection{Greedy Algorithm}
 

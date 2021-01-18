@@ -8,12 +8,12 @@
 Software often has has faults: ways in which the actual behavior of
 the software diverges from the intended or specifie behavior. Computer
 scientists have devised different strategies for finding and removing
-bugs: Formal software verification, code reviews, and different types
-of testing: unit testing, which tests the behavior of small software
-modules (such as classes), integration testing, which shows how well the
-software works in the environment it is used in, and regression testing,
-which shows developers whether they have introduced new bugs after the
-last change to the software.
+bugs: Formal software verification, code reviews, and different types of
+testing: unit testing, which tests the behavior of small software modules
+(such as classes), model-based testing, which automatically generates
+test suites from the specification of a software system, and regression
+testing, which shows developers whether they have introduced new bugs
+after the last change to the software.
 
 %CANDO: add sources for the cost of development & also hopefully long
 %execution times for test suites.
@@ -22,12 +22,16 @@ Regression testing takes up a significant portion of development cost,
 and the resulting test suites can grow quite significantly in size and
 execution time, which hinders development speed and increases costs.
 
-To mitigate the costs and runtimes of regression test suites, different
-strategies have been devised: test case selection, which selects a subset
-of tests for the current execution of tests, test suite reduction, which
-permanently deletes a subset of tests from the test suite, and test case
-priorization, which changes the order of test execution to maximize the
-amount of faults that is found early in the test suite execution.
+Similarly, model-based testing suffers from issues of combinatorial explosion, %CANDO: explain?
+and the resulting test suites tend to be very big.
+
+To mitigate the costs and runtimes of regression and model-based test
+suites, different strategies have been devised: test case selection,
+which selects a subset of tests for the current execution of tests,
+test suite reduction, which permanently deletes a subset of tests from
+the test suite, and test case priorization, which changes the order of
+test execution to maximize the amount of faults that is found early in
+the test suite execution.
 
 \cite{cruciani2019scalable} presents a new family of test suite
 reduction algorithms, called the FAST algorithms (first developed in
@@ -40,10 +44,11 @@ and their test suites. They compare the performance of the test suite
 reduction algorithms on 3 different variables: test suite reduction,
 fault detection loss, and runtime.
 
-This work attempts to replicate their findings using the data from 6
-additional projects, as well as adding random test case selection as
-a baseline test suite reduction method to compare the other methods to
-(following \textbf{Recommendation 8} from \cite{khan2018systematic}).
+This work attempts to replicate their findings using the data from
+6 additional open-source projects, as well as adding random test
+case selection as a baseline test suite reduction method to compare
+the other methods to (following \textbf{Recommendation 8} from
+\cite{khan2018systematic}).
 
 This work then attempts to determine how different test suite reduction
 strategies compare to each other in terms of time performance, fault

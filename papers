@@ -14,8 +14,15 @@ Test Set Diameter: Quantifying the Diversity of Sets of Test Cases. In
 2016 IEEE International Conference on Software Testing, Verification and
 Validation (ICST). 223–233.  DOI: http://dx.doi.org/10.1109/ICST.2016.33
 
-Michael & David: Computers and intractability: a guide to the theory
-of NP-completeness
-
 [20] Jure Leskovec, Anand Rajaraman, and Jeffrey D. Ullman. 2014. Mining
 of Massix Datasets. Cambridge University Press, New York, NY, USA.
+Questions
+
+Paper describing long running times for test suites?
+
+Andrews JH, Briand LC, Labiche Y. Proceedings of the 27th International
+Conference on Software Engineering (ICSE 2005). ACM Press: New York,
+2005
+
+W. B. Johnson and J. Lindesstrauss, "Extensions of lipschitz appings
+into a hilbert space"

@@ -57,10 +57,9 @@ Since dealing with high-dimensional vector spaces is computationally
 costly (e.g. when computing the Euclidean distance), the algorithm
 performs a random projection into a lower-dimensional vector-space that
 nonetheless still mostly preserves the pairwise distances of the vectors
-(in this case a sparse random projection).
-%CANDO: cite Achlioptas and Lindenstrauss here
+(in this case a sparse random projection (\cite{achlioptas2003database})).
 
-The second phase of FAST++ is executing the k-means++ algorithm %CANDO: cite Arthur & Vassilvitskii
+The second phase of FAST++ is executing the k-means++ algorithm \cite{arthur2006k}
 on the resulting vectors, with k in the inadequate case being the
 budget of the reduction, and in the adequate case being a variable
 that is incremented until the requirements are met. The k-means
@@ -151,22 +150,43 @@ $$\hbox{EstimateJD}(s_1,s_2)=1-\frac{|\{i|i\in 1..k, s_1(i)=s_2(i)\}|}{|s_1|}$$
 runtimes shorter. Let $S=\{s_1, \dots s_n\}$ be a set of minhash
 signatures of all tests. Now a matrix $M \in \mathbb{R}^{n \times k}$
 is created, by using the minhash signatures as columns. The rows of this
-matrix are now divided into bands of length $r$. Example:
+matrix are now divided into bands of length $r$ (in the example 2):
 
 % CANDO: add matrix stuff, LSHs, lines between buckets, row indicators
 % See sheet notes
 
-$$
-\matrix{
-	s_1 & s_2 & s_3 & s_4 \cr
-	9 & 4 & 1 & 1 \cr
-	3 & 8 & 0 & 5 \cr
-	0 & 2 & 4 & 5 \cr
-	0 & 4 & 2 & 9 \cr
-	2 & 7 & 6 & 3 \cr
-	1 & 4 & 0 & 6 \cr
-}
-$$
+\begin{figure}[!ht]
+\[
+\begin{blockarray}{cccccccccc}
+	& s_1 & s_2 & s_3 & s_4 & s_5 & s_6 & s_7 & s_8 & \\
+	\begin{block}{c[cccccccc]c}
+		r_1 & 1 & 16 & 9 & 5 & 5 & 1 & 2 & 6 & b_1 \bigstrut[t] \\
+		r_2 & 2 & 19 & 16 & 18 & 0 & 9 & 5 & 5 & \\
+		\\\hhline{~--------~}
+		& 8 & 10 & 9 & 14 & 1 & 3 & 11 & 2 & lsh_1 \\
+		\\\hhline{~========~}
+		r_3 & 10 & 8 & 4 & 11 & 18 & 9 & 16 & 7 & b_2 \\
+		r_4 & 12 & 14 & 3 & 5 & 8 & 3 & 1 & 16 & \bigstrut[b]\\
+		\\\hhline{~--------~}
+		& 3 & 5 & 1 & 6 & 17 & 13 & 12 & 7 & lsh_2 \\
+		\\\hhline{~========~}
+		r_5 & 10 & 11 & 5 & 18 & 14 & 6 & 14 & 7 & b_3 \\
+		r_6 & 18 & 5 & 2 & 13 & 7 & 19 & 9 & 11 & \\
+		\\\hhline{~--------~}
+		& 7 & 6 & 6 & 13 & 6 & 14 & 12 & 16 & lsh_3 \\
+		\\\hhline{~========~} \\
+	\end{block}
+\end{blockarray}\vspace*{-1.25\baselineskip}
+\]
+\caption{Locality-Sensitive Signature Hash Matrix}\label{tab:lsh_matrix}
+\end{figure}
+
+$b_n$ is the nth band, $r_n$ is the nth row, and $s_n$ is the nth
+signature.
+
+The columns within the bands are hashed into lsh values. If two lsh
+values correspond (e.g. in the case where the columns with values 11
+and 5 are both hashed into 6), they are put into the same candidate set.
 
 When the hash of the values in different columns of two bands is the
 same (the two minhashes are in the same bucket), the two test cases the
@@ -215,21 +235,32 @@ selection.
 In the inadequate case, random selection simply chooses $B$ random tests
 from the test set:
 
-function rsbudget(TS, B): \\
-	return randomsubset(TS, B)
+\begin{algorithm}
+\begin{algorithmic}
+\Function{rsbudget}{$TS, B$}
+	\State \textbf{return} $\hbox{randomsubset(TS, B)}$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
 
 In the adquate case, a random element is removed from the original test
 suite and added to the selected tests until the set of selected tests
 fulfills all requirements (in this case, covers all coverable lines):
 
-function rsadequate(TS, cov, B): \\
-	RS:=$\emptyset$ \\
-	allcov:=$\bigcup_{t \in TS} \hbox{cov}(t)$ \\
-	while $\bigcup_{t \in RS} \hbox{cov}(t)$!=allcov: \\
-		s:=selectrandom(TS) \\
-		TS:=$TS \backslash \{s\}$ \\
-		RS:=$RS \cup \{s\}$
-	return RS
+\begin{algorithm}
+\begin{algorithmic}
+\Function{rsadequate}{$TS, cov, B$}
+	\State $RS \gets \emptyset$
+	\State $allcov \gets \bigcup_{t \in TS} \hbox{cov}(t)$
+	\While{$\bigcup_{t \in RS} \hbox{cov}(t) \neq allcov$}
+		\State $s \gets selectrandom(TS)$
+		\State $TS \gets TS \backslash \{s\}$
+		\State $RS \gets RS \cup \{s\}$
+	\EndWhile
+	\State \textbf{return} RS
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
 
 \subsection{Adaptive Random Testing}
 
@@ -291,31 +322,48 @@ The greedy algorithm used is the greedy additional algorithm from
 \cite{rothermel2001prioritizing}: In each iteration, it selects the test
 case with the highest number of yet uncovered program entities.
 
-function ganext(RS, TS, cov): \\
-	alreadycov:=$\bigcup_{t \in RS} \hbox{cov}(t)$ \\
-	return $\hbox{arg max}_{t \in TS} |cov(t)\backslash alreadycov$ \\*
+\begin{algorithm}
+\begin{algorithmic}
+\Function{ganext}{$RS, TS, cov$}
+	\State $\hbox{alreadycov} \gets \bigcup_{t \in RS} \hbox{cov}(t)$
+	\State \textbf{return} $\hbox{arg max}_{t \in TS} |cov(t)\backslash \hbox{alreadycov}|$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
 
 In the adequate case, we select greedily until we achieve complete
 coverage:
 
-function gaadequate(TS, cov): \\
-	RS=$\emptyset$ \\
-	allcov:=$\bigcup_{t \in TS} \hbox{cov}(t)$ \\
-	while $\bigcup_{t \in RS} \hbox{cov}(t)$!=allcov: \\
-		s:=ganext(RS, TS, cov) \\
-		TS:=$TS \backslash \{s\}$ \\
-		RS:=$RS \cup \{s\}$ \\
-	return RS \\*
+\begin{algorithm}
+\begin{algorithmic}
+\Function{gaadequate}{$TS, cov$}
+	\State $RS \gets \emptyset$
+	\State $allcov \gets \bigcup_{t \in TS} \hbox{cov}(t)$
+	\While{$\bigcup_{t \in RS} \hbox{cov}(t) \neq allcov$}:
+		\State $s \gets ganext(RS, TS, cov)$
+		\State $TS \gets TS \backslash \{s\}$
+		\State $RS \gets RS \cup \{s\}$
+	\EndWhile
+	\State \textbf{return} RS
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
 
 In the budget case, we instead select greedily $B$ times.
 
-function gabudget(TS, cov, B): \\
-	RS=$\emptyset$ \\
-	allcov:=$\bigcup_{t \in TS} \hbox{cov}(t)$ \\
-	$B$ times \\
-		s:=ganext(RS, TS, cov) \\
-		TS:=$TS \backslash \{s\}$ \\
-		RS:=$RS \cup \{s\}$ \\
-	return RS \\*
+\begin{algorithm}
+\begin{algorithmic}
+\Function{gabudget}{$TS, cov, B$}
+	\State $RS \gets \emptyset$
+	\State $allcov \gets \bigcup_{t \in TS} \hbox{cov}(t)$
+	\For $B$ times
+		\State $s \gets ganext(RS, TS, cov)$
+		\State $TS \gets TS \backslash \{s\}$
+		\State $RS \gets RS \cup \{s\}$
+	\EndFor
+	\State \textbf{return} RS
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
 
 %CANDO: convert to pseudocode

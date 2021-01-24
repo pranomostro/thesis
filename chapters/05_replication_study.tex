@@ -54,6 +54,15 @@ random selection on runtime, TSR and FDL.
 
 \section{Study Design}
 
+We approached the research questions by collecting fault data, coverage
+data and test case source code from projects that had not been used in
+\cite{cruciani2019scalable}, and running the code from that paper on the
+new data. We then generated descriptive statistics (the mean, median,
+and standard deviation) on the performance (i.e. FDL, TSR, and runtime)
+of the different algorithms. Furthermore, we ordered the methods by
+median, and performed a Kruskal-Wallis test to create a statistically
+significant ordering of the different methods on the metrics evaluated.
+
 \section{Study Objects}
 
 The code bases and test suites selected for this study were small to
@@ -191,78 +200,146 @@ GiB of RAM available.
 
 \subsection{Research Questions}
 
-\paragraph{Research Question 1.1}
+\paragraph{Research Question 1.1 (Can TSR findings be replicated?)}
 
 \autoref{tab:tsr_stats} shows the descriptive statistical results
 (median, standard deviation and ordering for the Kruskal-Wallis test)
 in the adequate case.
 
+For Java programs with statement coverage in the adequate case,
+\cite{cruciani2019scalable} order the different methods of test suite
+reduction according to TSR. Their results mostly agree with ours: They
+rank GA highest, then FAST++ and FAST-pw, then FAST-CS, FAST-all below
+that, and the ART family lowest; we also rank GA highest, followed by
+FAST++, then FAST-CS and FAST-pw at the same level, then FAST-all, and
+the ART family last (on par with random selection). However, the median
+test suite reduction they report for these methods is much lower than what
+we observe (at least for the java programs): even GA only achives a TSR
+of 12.30, while in our experiment GA achieves a TSR of over 40. However,
+their results with C programs are more stark than ours, achieving a TSR
+of more than 90 for GA or FAST++.
+
+%CANDO: Use Borda-count to determine the amount of agreement in these
+%rankings?
+
+Our data shows higher variance in TSR performance on all algorithms.
+
 \begin{table}[htpb]
 	\caption[TSR statistical results, adequate]{Different variables relating to TSR (mdn is the median, $\sigma$ being the standard deviation, and $\delta$ being the ranking in the Kruskal-Wallis test)}\label{tab:tsr_stats}
 	\centering
-	\begin{tabular}{l l l l}
-	Approach & mdn & $\sigma$ & $\delta$ \\
+	\begin{tabular}{| l | l | l | l | l |}
 	\midrule
-	ART-D & 0.174 & 0.09 & \\
-	ART-F & 0.003 & 0.0157 & \\
-	FAST++ & 0.34 & 0.135 & \\
-	FAST-all & 0.218 & 0.078 & \\
-	FAST-CS & 0.32 & 0.121 & \\
-	FAST-pw & 0.323 & 0.119 & \\
-	GA & 0.391 & 0.149 & \\
-	RS & 0.002 & 0.016 & \\
+	Approach & $\mu$ & mdn & $\sigma$ & $\delta$ \\
+	\midrule
+	ART-D & 18.421 & 17.351 & 8.997 & (e) \\
+	ART-F & 0.945 & 0.228 & 1.654 & (f) \\
+	FAST++ & 36.116 & 33.811 & 13.581 & (b) \\
+	FAST-all & 21.414 & 18.264 & 8.536 & (d) \\
+	FAST-CS & 33.683 & 31.893 & 12.064 & (c) \\
+	FAST-pw & 33.258 & 32.718 & 11.458 & (c) \\
+	GA & 40.599 & 39.124 & 14.922 & (a) \\
+	RS & 0.947 & 0.420 & 1.491 & (f) \\
 	\bottomrule
 	\end{tabular}
 \end{table}
+
+\begin{figure}[h]
+\caption[TSR boxplots, adequate]{Boxplots for TSR for different algorithms in the adequate case}\label{fig:tsr_box}
+\centering
+\includegraphics[scale=0.7]{figures/tsrs.png}
+\end{figure}
 
 \paragraph{Research Question 1.2}
 
 \autoref{tab:fdl_stats} shows the descriptive statistics (mean, median,
 standard deviation, and ordering according to the Kruskal-Wallis test)
-for the FDL of different algorithms.
+for the FDL of different algorithms in both the budget and adequate case.
 
-%CANDO: merge tables
+We compare our findings to FDL performance on statement-covered C
+program data, since the fault information for the java programs used
+in \cite{cruciani2019scalable} is very sparse (1-3 faults per program),
+while fault information is much richer for the C programs.
+
+In the budget scenario, we could not detect strong differences in
+performance in FDL. All algorithms score equally, with the exception
+of GA dominating every other algorithm and RS being dominated by every
+other algorithm. Here, again, \cite{cruciani2019scalable} come to very
+similar conclusions: They find that GA is statistically significantly
+better than all other algorithms, which are in turn approximately equally
+effective at detecting faults.
+
+Here, we also find that the standard deviations in FDL for our data
+is higher than the ones in \cite{cruciani2019scalable}. Similar to
+their findings, we see no strong difference in variance for different
+algorithms.
+
+In the adequate case, our data ranks the algorithms into just two
+categories: The better-performing category contains algorithms
+from the ART family, FAST++ and FAST-CS, while the rest of
+the approaches is sorted into the bucket of worse-performing
+approaches. \cite{cruciani2019scalable} agrees that the ART family
+is best-performing, but find that FAST-all is second-best, GA being
+third-best, and FAST-CS, FAST-pw and FAST++ coming last. At the moment,
+we don't have a hypothesis about why this might be the case. It seems
+relevant, however, that the median fault detection loss for data was 0 for
+all algorithms (the mean fault detection loss being non-zero, however),
+just as the ART family and FAST-all in \cite{cruciani2019scalable}.
+Perhaps this is caused by single tests both having large coverage and
+detecting a majority of faults.
+
+This hypothesis is further supported by the observation that the variance
+in performance on all algorithms is much lower than in the original paper,
+for all algorithms.
 
 \begin{table}[htpb]
 	\caption[FDL statistical results]{Different variables relating to FDL ($\mu$ being the mean, mdn the median, $\sigma$ the standard deviation, and $\delta$ the ranking in the Kruskal-Wallis test)}\label{tab:fdl_stats}
 	\centering
-	\begin{tabular}{c | c | c}
+	\begin{tabular}{| c | c | c}
 	\midrule
 	Budget & Adequate \\
 	\midrule
-	{\begin{tabular}{l | l | l | l}
-		Approach & mdn & $\sigma$ & $\delta$ \\
+	{\begin{tabular}{l | l | l | l | l}
+		Approach & $\mu$ & mdn & $\sigma$ & $\delta$ \\
 		\midrule
-		ART-D & 0.936 & 0.347 & \\ \hline
-		ART-F & 0.949 & 0.357 & \\ \hline
-		FAST++ & 0.936 & 0.35495 & \\ \hline
-		FAST-all & 0.937 & 0.349 & \\ \hline
-		FAST-CS & 0.941 & 0.357 & \\ \hline
-		FAST-pw & 0.932 & 0.355 & \\ \hline
-		GA & 0.705 & 0.334 & \\ \hline
-		RS & 0.975 & 0.11 & \\
+		ART-D & 76.414 & 94.75 & 34.502 & (b) \\
+		ART-F & 77.72 & 95.04 & 35.684 & (b) \\
+		FAST++ & 76.49 & 94.05 & 35.662 & (b) \\
+		FAST-all & 74.78 & 92.19 & 35.269 & (b) \\
+		FAST-CS & 76.19 & 93.39 & 35.493 & (b) \\
+		FAST-pw & 71.63 & 93.82 & 35.665 & (b) \\
+		GA & 62.53 & 70.45 & 33.367 & (a) \\
+		RS & 93.43 & 97.46 & 9.305 & (c) \\
 	\end{tabular}} &
 	{ \begin{tabular}{l | l | l | l | l}
 		Approach & $\mu$ & mdn & $\sigma$ & $\delta$ \\
 		\midrule
-		ART-D & 0.002 & 0.0 & 0.01 \\ \hline
-		ART-F & 0.0005 & 0.0 & 0.007 \\ \hline
-		FAST++ & 0.011 & 0.0 & 0.021 \\ \hline
-		FAST-all & 0.003 & 0.0 & 0.006 \\ \hline
-		FAST-CS & 0.01 & 0.0 & 0.02 \\ \hline
-		FAST-pw & 0.007 & 0.0 & 0.011 \\ \hline
-		GA & 0.014 & 0.0 & 0.024 \\ \hline
-		RS & 0.0005 & 0.0 & 0.007 \\
+		ART-D & 0.129 & 0.0 & 0.702 & (a) \\
+		ART-F & 0.057 & 0.0 & 0.679 & (a) \\
+		FAST++ & 1.122 & 0.0 & 2.172 & (a) \\
+		FAST-all & 0.155 & 0.0 & 0.331 & (b) \\
+		FAST-CS & 1.144 & 0.0 & 2.367 & (a) \\
+		FAST-pw & 0.792 & 0.0 & 1.131 & (b) \\
+		GA & 1.432 & 0.0 & 2.444 & (b) \\
+		RS & 0.058 & 0.0 & 0.679 & (b) \\
 	\end{tabular}} \\
 	\bottomrule
 	\end{tabular}
 \end{table}
+
+\begin{figure}[h]
+\caption[FDL boxplots]{Boxplots for FDL for different algorithms}\label{fig:fdl_box}
+\centering
+\includegraphics[scale=0.7]{figures/fdls.png}
+\end{figure}
 
 We include the mean in the descriptive statistics to illustrate that
 while the median adequate reduction has no fault detection loss, it can
 nonetheless still occur.
 
 \paragraph{Research Question 2}
+
+Research question 2 asks whether the runtime performance of different
+algorithms compare to each other.
 
 \paragraph{Research Question 3}
 
@@ -283,7 +360,10 @@ Construct validity considers whether the methods are adequate to answer
 the research questions posed. As in the original paper, we used FDL
 and TSR as standard metrics, and reported the mean, median and standard
 deviation of the data as standard statistical properties of the generated
-data.
+data. We used faults generated by mutation testing software instead
+of real faults, which might be dissimilar from real faults.
+%CANDO: add citation that argues that mutation faults are similar
+%to real-world faults
 
 \subsection{Internal Validity}
 
@@ -293,6 +373,9 @@ such as the usage of the computer used for gathering data for other
 purposes during that time. To migitate these effects, we performed every
 measurement 50 times, and abstained from using the computer during the
 time of gathering data.
+
+%CANDO: add point about very different runtimes on different
+%projects, maybe attach distribution images?
 
 \subsection{Conclusion Validity}
 

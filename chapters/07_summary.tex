@@ -3,4 +3,42 @@
 
 \chapter{Summary}\label{chapter:summary}
 
-2 pages
+In this paper, we motivated and formulated the problem of handling large
+test suites: As test suites for regression testing and model-based testing
+become more comprehensive, their running times are often prohibitive to
+effective software development. We examined three different approaches
+to this problem formulated in the literature: test case priorization,
+test case selection, and test suite reduction. For test suite reduction,
+we in turn presented and shortly discussed a categorization of different
+algorithms: greedy selection algorithms, clustering-based algorithms,
+search-based algorithms, and hybrids.
+
+We then explained 7 algorithms examined in the paper
+\cite{cruciani2019scalable}: four algorithms from the FAST family (FAST++,
+based on the k-means++ algorithm; FAST-CS, based on coreset discovery;
+FAST-pw, based on locality-sensitive signature hashing; and FAST-all,
+which is based on FAST-pw, but uses random sampling for selecting test
+cases instead of Jaccard distance); two algorithms from the ART family
+(ART-D, which maximizes Jaccard distance between prioritized test cases;
+and ART-F, which maximizes the Manhattan distance); and the greedy
+additional algorithm (which selects the test case with the highest amount
+of yet uncovered program components). We also described random selection
+of test cases, which was not described in the original paper.
+
+We then formulate four research questions, which outline our attempt
+to replicate the findings in \cite{cruciani2019scalable}, examining
+the metrics FDL, TSR, total runtime performance, and performance of
+the different algorithms against a random baseline. We describe our
+process of gathering independent coverage and fault data and executing
+the algorithms on this data.
+
+We then collected and presented both descriptive and inductive statistical
+measurements on the data collected. We showed the mean, median, and
+standard deviation of FDL, TSR, and total runtime performance for all
+algorithms, and ranked the algorithms on FDL, TSR and total runtime
+performance using the Kruskal-Wallis test. We found that our results largely
+replicated the original results from \cite{cruciani2019scalable}, although
+we observed differences especially in total runtime performance.
+
+We described both threats to validity for our results, and presented
+ideas for future work in the area.

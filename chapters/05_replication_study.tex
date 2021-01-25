@@ -50,7 +50,7 @@ technique to a simple baseline. We use their recommendation (random
 selection) and compare the other approaches to how well they fare against
 random selection on runtime, TSR and FDL.
 
-\paragraph{(Possibly) Research Question 4: Can the results be reproduced with the original test data?}
+%\paragraph{(Possibly) Research Question 4: Can the results be reproduced with the original test data?}
 
 \section{Study Design}
 
@@ -249,7 +249,7 @@ Our data shows higher variance in TSR performance on all algorithms.
 \includegraphics[scale=0.7]{figures/tsrs.png}
 \end{figure}
 
-\paragraph{Research Question 1.2}
+\paragraph{Research Question 1.2 (CAN FDL findings be replicated?)}
 
 \autoref{tab:fdl_stats} shows the descriptive statistics (mean, median,
 standard deviation, and ordering according to the Kruskal-Wallis test)
@@ -336,18 +336,119 @@ We include the mean in the descriptive statistics to illustrate that
 while the median adequate reduction has no fault detection loss, it can
 nonetheless still occur.
 
-\paragraph{Research Question 2}
+\paragraph{Research Question 2 (Can total runtime performance findings be replicated?)}
 
-Research question 2 asks whether the runtime performance of different
-algorithms compare to each other.
+\autoref{tab:total_stats} lists statistics for the total reduction times
+in seconds ("total" including the time for loading the coverage files,
+the time for processing the black-box test files, and the reduction
+time). The table lists both the median and the mean of the total time,
+since especially in the adequate case there are big differences in these
+measurements (e.g. in the case of ART-D, where the mean reduction time is
+more than two orders of magnitude greater than the median reduction time).
 
-\paragraph{Research Question 3}
+Comparing the budget scenario to the statement-coverage based budget
+(we remove function and branch-coverage based approaches) scenario in
+\cite{cruciani2019scalable}, one can observe striking differences. While
+GA performs best in our measurements, the original paper ranks it
+in the middle (although, in the function-based coverage test, their
+measurements agree with ours). The approaches from the FAST family perform
+rather mediocre, receiving ranks (d) (FAST++ and and FAST-CS) and (e)
+(FAST-all and FAST-pw), while in the original measurements, FAST++
+is ranked second-best, followed by FAST-CS, and FAST-all and FAST-pw
+being ranked lowest. Algorithms from the ART family receive relatively
+high rankings in our measurements ((b) and (c)), while in the original
+measurements, they also perform mediocre (around as well as GA).
 
-\paragraph{(Possibly) Research Question 4}
+In the adequate scenario, we also only examine the statement-coverage
+based measurements from the original paper. Our results rank RS highest,
+followed by GA, while GA receives only rank (c) in the original results.
+From the FAST family, FAST++ and FAST-CS rank just below GA, while
+in the original results, they come out as clear winners. FAST-pw and
+FAST-all rank are ranked lowest in our results, even below the ART family,
+while in the original results, ART algorithms are clearly ranked lowest.
+We suspect that this result is due to the difference in medians between
+the datasets we used and the original dataset: The dataset we used
+contained several relatively small test suites, and a relatively big
+outlier, while the test suites in the original paper were more similar
+in size. That leads to comparatively small medians (and comparatively
+large means) in total runtime for our data (as can be seen in the greater
+standard deviations) on the ART algorithms. Since the Kruskal-Wallis
+test we and \cite{cruciani2019scalable} use only considers medians for
+ordering, the outliers do not influence the final ordering.
+
+\begin{table}[htpb]
+	\caption[Runtime performance statistical results]{Different variables relating to total runtime in seconds ($\mu$ being the mean, mdn the median, $\sigma$ the standard deviation, and $\delta$ the ranking in the Kruskal-Wallis test)}\label{tab:total_stats}
+	\centering
+	\begin{tabular}{| c | c | c}
+	\midrule
+	Budget & Adequate \\
+	\midrule
+	{\begin{tabular}{l | l | l | l | l}
+		Approach & $\mu$ & mdn & $\sigma$ & $\delta$ \\
+		\midrule
+		ART-D & 0.81 & 0.975 & 0.318 & (b) \\
+		ART-F & 0.919 & 0.982 & 0.133 & (c) \\
+		FAST++ & 1.064 & 1.156 & 0.545 & (d) \\
+		FAST-all & 7.005 & 3.567 & 8.425 & (e) \\
+		FAST-CS & 1.034 & 1.152 & 0.506 & (d) \\
+		FAST-pw & 7.025 & 3.582 & 8.473 & (e) \\
+		GA & 0.974 & 0.968 & 0.632 & (a) \\
+		RS & 0.95 & 0.982 & 0.087 & (c) \\
+	\end{tabular}} &
+	{ \begin{tabular}{l | l | l | l | l}
+		Approach & $\mu$ & mdn & $\sigma$ & $\delta$ \\
+		\midrule
+		ART-D & 58.232 & 0.475 & 127.311 & (e) \\
+		ART-F & 158.892 & 1.926 & 341.625 & (f) \\
+		FAST++ & 1.792 & 0.329 & 3.254 & (c) \\
+		FAST-all & 6.345 & 2.622 & 8.494 & (f) \\
+		FAST-CS & 2.232 & 0.334 & 4.053 & (d) \\
+		FAST-pw & 8.224 & 2.736 & 12.206 & (g) \\
+		GA & 4.286 & 0.147 & 8.725 & (b) \\
+		RS & 0.965 & 0.143 & 1.535 & (a) \\
+	\end{tabular}} \\
+	\bottomrule
+	\end{tabular}
+\end{table}
+
+%CANDO: Compare to just reduction times as well?
+
+\paragraph{Research Question 3 (How well do algorithms perform against a random baseline?)}
+
+In short, the answer is that they perform better on performance metrics,
+while being slower. \autoref{tab:tsr_stats} shows that RS ranks lowest
+on TSR (together with ART-F). Similarly, \autoref{tab:fdl_stats} ranks
+RS lowest on FDL in the budget and adequate case (although in the latter
+case, RS can not be shown to be statistically significantly worse than
+three other algorithms). We also found that RS performs surprisingly
+badly in terms of runtime performance (see \autoref{tab:total_stats}) in
+the budget case, ranking third, despite being the conceptually simplest
+algorithm we examined. However, in the adequate case, it ranks best.
+
+%\paragraph{(Possibly) Research Question 4}
 
 \section{Discussion}
 
-Comparison to ''Scalable Approaches to Test Suite Reduction''
+In general, we find that our results largely replicate the
+results in \cite{cruciani2019scalable}. On TSR and FDL, we (and
+\cite{cruciani2019scalable}) rank GA very high, often first, usually
+followed by FAST++ and FAST-CS, then FAST-pw and FAST-all, then the
+ART algorithms and finally RS. With regards to FDL, we often can't
+statistically significantly differentiate the algorithms in performance,
+similar to the original paper.
+
+Our results in runtime performance differ from the original results,
+though, disagreeing both in the adequate and the budget case. We
+hypothesize that this is due to different distributions in the sizes
+of the test suites tested on, with the test suites we used being both
+smaller and larger than the test suites used in the original paper, which
+makes the median of runtimes less useful at determining the relative
+performance of algorithms.
+
+We cautiously conclude that for test suites of the sizes we have examined,
+the GA algorithm makes a good trade-off between test suite reduction,
+fault detection loss and runtime performance, if coverage information
+is available.
 
 \section{Threats to Validity}
 

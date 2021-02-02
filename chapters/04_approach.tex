@@ -17,11 +17,11 @@ modifications to fix faults discovered in the original code.
 
 \section{Implemented Algorithms}
 
-\cite{cruciani2019scalable} compares 7 different methods of
-test-suite reduction. 4 of those (\textbf{FAST++}, \textbf{FAST-all},
+\cite{cruciani2019scalable} compares seven different methods of
+test-suite reduction. Four of those (\textbf{FAST++}, \textbf{FAST-all},
 \textbf{FAST-CS} and \textbf{FAST-pw}) are in the FAST family
 (first introduced in \cite{miranda2018fast}), which uses clustering
-techniques to find representative test cases. 2 other algorithms are
+techniques to find representative test cases. Two other algorithms are
 taken from the similarly clustering-based ART family, first developed
 in \cite{chen2010adaptive}. The last reduction method examined in
 \cite{cruciani2019scalable} is the Greedy Additional (\textbf{GA})
@@ -37,9 +37,9 @@ as recommended by \cite{khan2018systematic}.
 The FAST family is a clustering-based family of algorithms for test
 suite reduction (\cite{miranda2018fast}, \cite{cruciani2019scalable}).
 
-The FAST family is a collection of 4 clustering based TSR algorithms
-that work both with adequate and inadequate TSR problems, especially
-for large test suites.
+The FAST family is a collection of 4 clustering based test suite
+reduction algorithms that work both with adequate and inadequate test
+suite reduction problems, especially for large test suites.
 
 \subsubsection{FAST++}
 
@@ -225,17 +225,18 @@ tests with a given size ($one$, $log$, $sqrt$, $all$).
 
 \subsection{Random Selection}
 
-$\frac{1}{2}$ a page
-
 \cite{khan2018systematic} gives 12 recommendations on how to execute and
 evaluate test suite reduction experiments. One of them is to include a
 baseline algorithm to compare the other algorithms to, such as random
 selection.
 
 In the inadequate case, random selection simply chooses $B$ random tests
-from the test set:
+from the test set (Algorithm \autoref{code:rsbudget}).
+
+%TODO: fix the references for the pseudocode
 
 \begin{algorithm}
+\caption[Random selection, budget]{Random selection, budget}\label{code:rsbudget}
 \begin{algorithmic}
 \Function{rsbudget}{$TS, B$}
 	\State \textbf{return} $\hbox{randomsubset(TS, B)}$
@@ -245,9 +246,11 @@ from the test set:
 
 In the adquate case, a random element is removed from the original test
 suite and added to the selected tests until the set of selected tests
-fulfills all requirements (in this case, covers all coverable lines):
+fulfills all requirements (in this case, covers all coverable lines). See
+Algorithm \autoref{code:rsadequate}.
 
 \begin{algorithm}
+\caption[Random selection, adequate]{Random selection, adequate}\label{code:rsadequate}
 \begin{algorithmic}
 \Function{rsadequate}{$TS, cov, B$}
 	\State $RS \gets \emptyset$
@@ -291,8 +294,8 @@ criterion for selecting $c$ is to maximize the distance between all $p
 coverage and examine different methods for comparing the sequence of
 priorizited test cases to the tests in the candidate set (maximizing
 the maximum/average/minimum distance between the selected test case and
-the already priorized cases (and conclude that maximizing the minimal
-distance might be the best strategy)).
+the already priorized cases), and conclude that maximizing the minimal
+distance might be the best strategy.
 
 The selected test case is appended to the sequence of priorizited test
 cases and removed from $T$. Unless $T$ is now empty, the first stage is
@@ -323,6 +326,7 @@ The greedy algorithm used is the greedy additional algorithm from
 case with the highest number of yet uncovered program entities.
 
 \begin{algorithm}
+\caption[Greedy selection next test case]{Greedy selection next test case}\label{code:ganext}
 \begin{algorithmic}
 \Function{ganext}{$RS, TS, cov$}
 	\State $\hbox{alreadycov} \gets \bigcup_{t \in RS} \hbox{cov}(t)$
@@ -335,6 +339,7 @@ In the adequate case, we select greedily until we achieve complete
 coverage:
 
 \begin{algorithm}
+\caption[Greedy selection, adequate]{Greedy selection, adequate}\label{code:gaadequate}
 \begin{algorithmic}
 \Function{gaadequate}{$TS, cov$}
 	\State $RS \gets \emptyset$
@@ -352,6 +357,7 @@ coverage:
 In the budget case, we instead select greedily $B$ times.
 
 \begin{algorithm}
+\caption[Greedy selection, budget]{Greedy selection, budget}\label{code:gabudget}
 \begin{algorithmic}
 \Function{gabudget}{$TS, cov, B$}
 	\State $RS \gets \emptyset$
@@ -365,5 +371,3 @@ In the budget case, we instead select greedily $B$ times.
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
-
-%CANDO: convert to pseudocode

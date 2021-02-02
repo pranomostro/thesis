@@ -3,33 +3,32 @@
 
 \chapter{Replication Study}\label{chapter:replication_study}
 
-%CANDO: where to put the information about bugs discovered in the original code?
-
-17 pages
+In this chapter, we first present our research questions. We then describe
+our study design and setup, and both describe and evaluate the results
+we obtained. We close by discussing the results in the broader context
+of test suite reduction, and enumerate possible threats to validity.
 
 \section{Research Questions}
 
-We define five %CANDO: change the number if we add/drop research questions
-research questions, adapting three from \cite{cruciani2019scalable}
-and adding two further questions.
+We define four research questions, adapting three from
+\cite{cruciani2019scalable} and adding one additional question on
+performance in relation to a baseline algorithm.
 
 \subparagraph{Research Question 1.1: Can the relative effectiveness in TSR be replicated on other study objects?}
 
 We care about the size of the reduced test suite, therefore it is valuable
 by how much test suites are reduced. We use the TSR metric (defined
-in terms and definitions) to evaluate the magnitude of the reduction.
+in ~\ref{chapter:terms}) to evaluate the magnitude of the reduction.
 Using the TSR is mostly useful in adequate scenarios, since in inadequate
 scenarios, the size of the reduced test suite relative to the original
-test suite is fixed. We rank the algorithms using a Kruskal-Wallis test,
-taken from \cite{cruciani2019scalable}
+test suite is fixed.
 
 \subparagraph{Research Question 1.2: Can the relative effectiveness in FDL be replicated on other study objects?}
 
 \cite{rothermel2002empirical} finds that test suite reduction can severely
 compromise fault detection capability. To test whether this is the case,
 the FDL metric is used to examine the fault detection capabilities
-for the algorithms given new data. We also rank the methods using a
-Kruskal-Wallis test.
+for the algorithms given new data.
 
 \paragraph{Research Question 2: Can the relative runtime performance of the different algorithms be replicated?}
 
@@ -40,9 +39,6 @@ the methods according to runtime is expected to be the same (that is, if
 algorithm $X$ was faster than algorithm $Y$ on the old data, we can expect
 algorithm $X$ to also be faster than algorithm $Y$ on the new data).
 
-Again, we use the Kruskal-Wallis test to rank methods after their
-runtime performance.
-
 \paragraph{Research Question 3: How much better than random selection are specialized algorithms?}
 
 \cite{khan2018systematic} recommends a comparison of the examined
@@ -50,42 +46,72 @@ technique to a simple baseline. We use their recommendation (random
 selection) and compare the other approaches to how well they fare against
 random selection on runtime, TSR and FDL.
 
-%\paragraph{(Possibly) Research Question 4: Can the results be reproduced with the original test data?}
-
 \section{Study Design}
 
-We approached the research questions by collecting fault data, coverage
-data and test case source code from projects that had not been used in
-\cite{cruciani2019scalable}, and running the code from that paper on the
-new data. We then generated descriptive statistics (the mean, median,
-and standard deviation) on the performance (i.e. FDL, TSR, and runtime)
-of the different algorithms. Furthermore, we ordered the methods by
-median, and performed a Kruskal-Wallis test to create a statistically
-significant ordering of the different methods on the metrics evaluated.
+We approached the research questions by collecting test case source code,
+converage information and fault-detection data from projects that had
+not been used in \cite{cruciani2019scalable}, and running the code from
+that paper on the new data.
+
+\paragraph{Research Question 1}
+
+In order to answer Research Question 1, we then generated descriptive
+statistics (the mean, median, and standard deviation) on the performance
+measures (i.e. FDL and TSR) for the different algorithms. We then,
+just as the approach in \cite{cruciani2019scalable}, first performed the
+Kruskal-Wallis test for all pairs of algorithms on the same metric (with
+a significance level of 5\%, as in the original paper). Algorithms for
+which no statistically significant difference could be found were ranked
+equally high, for algorithms with significantly different performance
+we used the median FDL/TSR to determine the ranking.
+
+We used this approach to ranking the different algorithms to ensure our
+results were comparable to the results in the original paper.
+
+The result was operationalized by assigning the algorithms letters,
+with "(a)" being the signifier for the best performing algorithms,
+"(b)" for the second-best, and so on (several algorithms could receive
+the same ranking).
+
+We then compared the rankings according to TSR and FDL to the ones in
+\cite{cruciani2019scalable}.
+
+\paragraph{Research Question 2}
+
+We also computed the mean, median and standard deviation for the runtime
+of the different approaches, and ranked them according to the method
+described for Research Question 2.
+
+We then compared our rankings for runtime to the ones in
+\cite{cruciani2019scalable}.
+
+\paragraph{Research Question 3}
+
+For Research Question 3, we used the previously collected rankings
+for different algorithms, and evaluated the ranking of random selection
+in comparison to the other approaches presented.
 
 \section{Study Objects}
 
 The code bases and test suites selected for this study were small to
-medium sized open-source Java projects. They all used either JUnit
-4 or JUnit 5 as their testing framework, and the tool Maven %CANDO: right capitalization?
-for building and testing. We used the latest version.
+medium sized open-source Java projects, which we selected because tools
+for generating coverage information and mutation-test data using Maven are
+available and comparatively easy to use. The selected projects all used
+either JUnit 4 or JUnit 5 as their testing framework, and the tool Maven
+for building and testing. We used the latest version as of November 2020.
 
-We selected java projects because tools for generating coverage
-information and mutation-test data using Maven are available and
-comparatively easy to use. We decided to use open-source projects to make
-checking our generated data easier, as well as for availability reasons.
+We decided to use open-source projects to make checking our generated
+data easier, as well as for availability reasons.
 
 The selected projects are both under development and in use, which makes
 our results relevant to real-life systems.
 
-\section{Selecting Projects}
-
-The projects used, their versions and size are presented in table CANDO
-(project and test suite size are in lines of code, the version is the
-6-digit prefix of the git commit used).
+The projects used, their versions and size are presented in
+\autoref{tab:projects} (project and test suite size are in lines of code,
+the version is the 6-digit prefix of the git commit used).
 
 \begin{table}[htpb]
-	\caption[]{}\label{tab:projects} %Project name, version, size of test suite, size of project, link to project
+	\caption[Information about Projects Selected]{Basic Information about the selected open-source Java Projects}\label{tab:projects}
 	\centering
 	\begin{tabular}{l l l l l l}
 		\toprule
@@ -101,8 +127,6 @@ The projects used, their versions and size are presented in table CANDO
 	\end{tabular}
 \end{table}
 
-%CANDO: include number of test cases?
-
 \section{Study Setup}
 
 Testing the performance of the algorithms required three different kinds
@@ -113,17 +137,17 @@ and fault information.
 
 For every examined project, the test suite was converted into a format
 suitable for the code from \cite{cruciani2019scalable} by replacing the
-newlines from each test with spaces and concatenating the tests into
-one file (the \textbf{black-box file}), such that every line contained
-one test case.
+newlines from each test with spaces and concatenating the tests into one
+file (the black-box file), such that every line contained one test case.
 
 For some of the projects, test cases were excluded since they failed
-during the default test run:
-
-%CANDO: make second column multi-line
+during the default test run (see \autoref{tab:excluded}), with several
+tests being excluded from assertj-core, one or two tests each being
+excluded from the Apache commons libraries, and none from the remaining
+two projects.
 
 \begin{table}[htpb]
-	\caption[]{}\label{tab:excluded} %Project name, excluded tests
+	\caption[Tests excluded]{Tests excluded from data gathering}\label{tab:excluded}
 	\centering
 	\begin{tabular}{l | p{10cm}}
 		\toprule
@@ -141,32 +165,32 @@ during the default test run:
 
 \subsection{Generating Coverage Information}
 
-Coverage information was generated using jacoco with the testwise mode
-of the teamscale jacoco agent. %CANDO link
+Since we needed information about which test covers which parts
+of the program, and not just information about which parts of the
+program were being covered, we used an extension to the widely used
+coverage program JaCoCo, the Teamscale JaCoCo Agent (available at
+\url{https://github.com/cqse/teamscale-jacoco-agent}).
 
-Since the teamscale jacoco agent only supports line coverage, other
+Since the Teamscale JaCoCo Agent only supports line coverage, other
 types of coverage had to be eschewed.
-
-%CANDO: add note about how line coverage subsumes branch & function coverage?
 
 The json files created by the teamscale jacoco agent were converted
 from JSON into the format used by \cite{cruciani2019scalable}: a file
 containing a list of numbers in each line, with the numbers $n_1, \dots
 n_i$ in line $n$ corresponding to the source lines of code in the tested
-project covered by the test case at line $n$ in the \textbf{black-box
-file}.
+project covered by the test case at line $n$ in the black-box file.
 
 \subsection{Collecting Fault Coverage Information}
 
-Fault detection information was not available for the projects used,
-and was therefore generated by mutation testing using the mutation
-testing framework pitest (first described in \cite{budd1980mutation}.
+Fault detection information was not available for the projects used, and
+was therefore generated using the mutation testing framework Pitest (first
+described in \cite{coles2016pit}, available at \url{http://pitest.org/}).
 
-The generated mutation test data was converted from XML to the format used
-in the code of \cite{cruciani2019scalable}: a text file containing a list
-of number per line, the numbers at line $n$ corresponding to different
-classes for which the test case at line $n$ in the \textbf{black-box file}
-did find faults.
+The generated mutation test data was converted from XML to the format
+used in the code of \cite{cruciani2019scalable}: a text file containing
+a list of number per line, the numbers at line $n$ corresponding to
+different classes for which the test case at line $n$ in the black-box
+file did find faults.
 
 \section{Results}
 
@@ -175,18 +199,21 @@ and applied the test suite reduction algorithms to new test data
 (i.e. black-box test suite files and coverage information of 6 open source
 projects) after minimal modification. These modifications were as follows:
 
-We added a further algorithm for the random selection of test cases.
+\begin{enumerate}
+\item We added a further algorithm for the random selection of test cases.
+\item We fixed three bugs we found in the code:
+	\begin{enumerate}
+	\item an off-by-one error in loading coverage information
+	\item a bug where in small test suites sometimes the candidate set would be empty
+	\item a mistake where a a measured variable was not reported correctly for FAST-all
+	\end{enumerate}
+\end{enumerate}
 
-We fixed three bugs we found in the code: an off-by-one error in loading
-coverage information, a bug where in small test suites sometimes the
-candidate set would be empty, and a mistake where a a measured variable
-was not reported correctly for FAST-all. The changes made to the source
-code can be found at CANDO.
+% The changes made to the source code can be found at CANDO.
 
 In the budget scenario, we considered budgets between 1\% and 30\%, with
-a step increase of 1\%. We considered only line coverage (functionally
-equivalent to statement coverage), and performed 50 measurements of
-FDL, TSR, preparation and reduction time.
+a step increase of 1\%. We considered only line coverage, and performed
+50 measurements of FDL, TSR, preparation and reduction time.
 
 In the adequate scenario, we also considered only line coverage, and
 made 50 measurements of preparation time, coverage preparation time,
@@ -204,7 +231,8 @@ GiB of RAM available.
 
 \autoref{tab:tsr_stats} shows the descriptive statistical results
 (median, standard deviation and ordering for the Kruskal-Wallis test)
-in the adequate case.
+in the adequate case, and \autoref{fig:tsr_box} shows boxplots for
+TSR for the different algorithms.
 
 For Java programs with statement coverage in the adequate case,
 \cite{cruciani2019scalable} order the different methods of test suite
@@ -253,7 +281,8 @@ Our data shows higher variance in TSR performance on all algorithms.
 
 \autoref{tab:fdl_stats} shows the descriptive statistics (mean, median,
 standard deviation, and ordering according to the Kruskal-Wallis test)
-for the FDL of different algorithms in both the budget and adequate case.
+for the FDL of different algorithms in both the budget and adequate case,
+and \autoref{fig:fdl_box} shows boxplots for FDL for different algorithms.
 
 We compare our findings to FDL performance on statement-covered C
 program data, since the fault information for the java programs used
@@ -425,8 +454,6 @@ badly in terms of runtime performance (see \autoref{tab:total_stats}) in
 the budget case, ranking third, despite being the conceptually simplest
 algorithm we examined. However, in the adequate case, it ranks best.
 
-%\paragraph{(Possibly) Research Question 4}
-
 \section{Discussion}
 
 In general, we find that our results largely replicate the
@@ -461,10 +488,26 @@ Construct validity considers whether the methods are adequate to answer
 the research questions posed. As in the original paper, we used FDL
 and TSR as standard metrics, and reported the mean, median and standard
 deviation of the data as standard statistical properties of the generated
-data. We used faults generated by mutation testing software instead
-of real faults, which might be dissimilar from real faults.
-%CANDO: add citation that argues that mutation faults are similar
-%to real-world faults
+data. We used faults generated by mutation testing software instead of
+real faults, which might be dissimilar from real faults. However, it
+has been argued that mutation faults are similar to real-world faults
+(\cite{budd1980mutation}, and programmers of mutation-testing software
+try to make the faults introduced as realistic as possible.
+
+To prevent bugs from our code and the code by \cite{cruciani2019scalable}
+introducing incorrect results, we checked the code using a small,
+transparently understandable test project. We then manually verified
+that this project was handled correctly. This led to finding one of
+the bugs in the original code by \cite{cruciani2019scalable}.
+
+Due to restrictions on availability, we used line coverage instead of
+statement coverage. Since the original study mostly examined statement
+coverage, there might be problems in comparing the results of the two
+studies (such as statements spanning multiple lines, or several statements
+in one line). However, we claim that in practice, statement coverage
+and line coverage are similar in terms of granularity.  For example,
+both \cite{an2018comparing} and \cite{yang2009survey} treat statement
+and line coverage as equivalent.
 
 \subsection{Internal Validity}
 
@@ -477,14 +520,6 @@ time of gathering data.
 
 %CANDO: add point about very different runtimes on different
 %projects, maybe attach distribution images?
-
-\subsection{Conclusion Validity}
-
-Threats to conclusion validity are present when false positives are
-found due to considering many different test suite reduction methods
-and variables. This paper performs 4 %CANDO: update
-statistical tests, thus we judge a significance level of 5\% to be
-sufficient.
 
 \subsection{External Validity}
 

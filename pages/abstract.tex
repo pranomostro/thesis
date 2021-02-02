@@ -1,10 +1,18 @@
 \chapter{\abstractname}
 
-As a response to ever-growing test suites with long runtimes, several
-different approaches have been developed to reduce the time for test
-suite execution to give useful results. One of these approaches is test
-suite reduction: selecting a sample of tests that maximizes coverage on
-the tested source code. This paper attempts to replicate the findings
-in \cite{cruciani2019scalable}, which borrows techniques from big
-data to handle very large test suites. We use independently generated
-testing data from open source projects, and find that TODO.
+Test suites have been growing along with codebases, which has resulted
+in them having long run-times (slowing down the development process) and
+higher computational needs (costing electricity and hardware). Several
+different approaches have been developed to reduce the time for test suite
+execution to give useful results. One of these approaches is test suite
+reduction: selecting a sample of tests that maximizes coverage on the
+tested source code while still reducing runtimes. This Bachelor's thesis
+attempts to replicate the findings in \cite{cruciani2019scalable},
+which borrows techniques from big data to handle very large test
+suites. From 6 open-source projects, we collect test suites, generate
+coverage information and fault detection information and perform test
+suite reductions on on these test suites using the algorithms from
+\cite{cruciani2019scalable}. We find that our experiments largely
+replicate the rankings on the metrics of fault detection loss and test
+suite reduction, but disagree on the runtime performance of the different
+algorithms. We discuss possible reasons for this discrepancy.

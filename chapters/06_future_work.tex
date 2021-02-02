@@ -3,4 +3,46 @@
 
 \chapter{Future Work}\label{chapter:futurework}
 
+The literature on test suite reduction is very comprehensive,
+\cite{khan2018systematic} identify 4320 papers published in the field
+of test suite reduction between 1993 and 2016. This makes it difficult
+to assess which ideas have already been evaluated, and which haven't.
+Still, we attempt to identify some possible further lines of work that
+haven't been explored as much as desirable yet.
 
+The first possible like of work we identify is further replication
+attempts of existing papers, and comparisons with random baseline
+algorithms.  Replication attempts are useful because they can unveil
+methodological issues in existing papers (such as discovering bugs in
+the source code used, statistical mistakes and distorted data), but are
+usually neglected because of low academic payoff. %CANDO: citation needed
+
+The second possible line of work is large-scale comparisons of many
+different test suite reduction algorithms on comprehensive datasets.
+A good example for this kind of work is \cite{hemmati2010achieving},
+but it uses a relatively small dataset with 2 test suites (although
+the test suites themselves are very large), one containing 4 and
+the other 15 faults. They examine 300 different approaches to test
+suite reduction. It would be useful (though very expensive, both
+computationally and time-wise) to collect a large number of test suite
+reduction approaches presented in the literature, and compare them to
+each other on several metrics.
+
+A possible line of work that is not directly a novel approach to
+test suite reduction is the collection of fault and coverage data for
+open-source project to create bigger datasets on which to test novel
+approaches to test suite reduction. \cite{yoo2012regression}
+state that "subject programs from SIR account for almost 60\% of
+the subjects of empirical studies observed in the regression testing
+techniques literature" (SIR being the software infrastructure repository
+\cite{dosupporting2005}). The programs and their test suites in SIR are
+relatively small, and include only one language. It might be useful to
+provide a combined and extended database of projects with test suites,
+coverage and fault information and faults (\cite{cruciani2019scalable}
+uses SIR, as well as programs from Defects4j \cite{just2014defects}).
+
+Test suite reduction and similar methods are often motivated by stating
+that test suites in the industry are often very large and have long
+runtimes. It would be useful to have a collection of cases which show
+runtimes of very large test suites in the real world, to provide sources
+for these types of motivations.

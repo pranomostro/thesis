@@ -6,7 +6,7 @@
 %CANDO: Write about regression testing, model-based testing where
 %tests are selected from automatically generated test suites?
 
-The literature on handling large test suites is large, and this
+The literature on handling big test suites is large, and this
 summarization will only cover small parts of it. For an older,
 but comprehensive overview dividing the field into test-suite
 reduction, test case selection and test case priorization, see
@@ -15,8 +15,8 @@ suite reduction is \cite{khan2016survey}, which attempts to create a
 full taxonomy of test suite reduction frameworks/tools and specifically
 their implementions. \cite{khan2018systematic} focuses on the algorithmic
 approach (i.e. greedy/clustering/searching/hybrid) of the test suite
-reduction system and gives recommendations for future the evaluation of
-test suite reduction methods.
+reduction system and gives recommendations for future evaluation of test
+suite reduction methods.
 
 The methods for improving the runtimes of large test suites discussed
 in the literature can be divided into three related approaches
@@ -52,7 +52,7 @@ $T' \in S_{T}$ so that
 
 $$ \forall T'' \in S_{T}: T' \neq T'' \land \forall i \in 1..n: |\bigcup_{j=1}^{i} m(T'(j))| \geq |\bigcup_{j=1}^{i} m(T''(j))| $$
 
-i.e finding the optimal ordering of test cases, so that every requirement
+i.e. finding the optimal ordering of test cases, so that every requirement
 is met as soon as possible.
 
 %CANDO Maybe use APFD here instead?
@@ -69,25 +69,25 @@ maximize the requirements for a set of of recent changes to the software.
 
 Test case selection usually assumes a high degree of transparency and
 the availability of a lot of information about the SUT, such as execution
-graphs, coverage information, and sometimes information about the running
-times of individual tests.
+graphs, coverage information, and sometimes information about the runtimes
+of individual tests.
 
 \section{Test Suite Reduction}
 
 Test suite reduction, on the other hand, attempts to permanently reduce
 the size of the test suite by removing redundant tests. The distinguishing
 feature from test case selection is that it doesn't take into account
-recent changes.
+recent changes, and removes test cases permanently.
 
 %CANDO: create subsubsections here?
 
-Generally, in test case reduction two different cases are distinguished:
+Generally, in test suite reduction two different cases are distinguished:
 adequate and inadequate reduction.
 
 In adequate test suite reduction, the goal is to find the smallest subset
 of $T$ so that all $R$ are satisfied:
 
-$$T_{r}=\hbox{argmin}_{T_{r}} |T_{r} \subset T: R=\bigcup_{t_{r} \in T_{r}} m(t_{r})|$$
+$$T_{r}=\underset{T_r}{\hbox{arg min}} |T_{r} \subset T: R=\bigcup_{t_{r} \in T_{r}} m(t_{r})|$$
 
 This goal, however, is rarely fulfilled. Often, the objective is to
 keep the resulting test suite as small as possible, since reaching
@@ -95,8 +95,8 @@ this optimum is computationally hard (as researchers have remarked
 (\cite{khan2016survey}), it is equivalent to the NP-complete set cover
 problem (\cite{garey1979computers})).
 
-Instead, researchers attempt to reduce the size of test suites further,
-while still keeping running times small.
+Researchers have attempted to reduce the size of test suites further,
+while still keeping runtimes small.
 
 Adequate reduction needs the requirements $R$ to be present at the time
 of reduction to judge whether all requirements have been fulfilled.
@@ -104,18 +104,19 @@ of reduction to judge whether all requirements have been fulfilled.
 The second case of test suite reduction is the inadequate/budget one. An
 inadequate test suite reduction fixes the size of the reduce test suite
 to a budget $B=|T_{r}|$. This cannot guarantee that all requirements
-are completely fulfilled, but often reduces runtimes significantly.
-%CANDO: perhaps find a source for this statement.
+are completely fulfilled, but often reduces runtimes and reduction
+times significantly.
 
 Inadequate reduction can work without access to the requirements.
 For example, the FAST family needs only the content of the testcases to
 perform a reduction. However, inadequate reduction gives no guarantees
-about the performance of the resulting reduced test suite.
+about the performance of the resulting reduced test suite on fulfilling
+the requirements.
 
 Other possible goals of test suite reduction include reducing the total
 runtime of the reduced test suite given past runtime information, but
-due to the absence of information about test runtimes, this goal has
-been studied less. %CANDO: [citation needed]
+due to the scarcity of information about test runtimes, this goal has
+been studied less.
 
 Test case priorization subsumes test suite reduction: Given an ordering
 $T'$ of test cases, it is easy to select the first $B$ test cases in the
@@ -140,12 +141,10 @@ the coverage criterion and a heuristic, and then removed from the test
 set and added to the set of the reduced test suite, until the coverage
 criterion is completely fulfilled by the reduced test suite.
 
-Two simple heuristics, described more in detail later, are the total
+Two simple heuristics, one described more in detail later, are the total
 heuristic (choosing the test with the highest amount of coverage from
 the test set) and the additional heuristic (choosing the test with the
 highest amount of coverage yet not covered by the reduced test suite).
-
-%CANDO: add further examples of papers using this method
 
 \subsection{Clustering}
 
@@ -156,8 +155,8 @@ so that the difference between two subsets doesn't fall under a given %CANDO: re
 threshold, and then sampling test cases from the subsets (in the optimal
 case one representative test case per subset).
 
-This method doesn't need the test requirements to be available: many
-approaches (for example from the FAST family examined in this paper
+This method doesn't need the test requirements to be available:
+many approaches (for example from the FAST family examined in
 \cite{miranda2018fast}) calculate the similarity of two test cases using
 the string of the test case's source code. However, those approaches can
 only be inadequate: The test case strings give no information about when
@@ -171,10 +170,10 @@ and \cite{miranda2018fast}, but also the ART family from
 
 \subsection{Searching}
 
-Search-based methods for test suite reduction evaluate subsets
-$S=\{s_1, \dots s_m\} \subset \mathcal{P}(T)$ of $T$ using a cost
-and/or effectiveness measure $F: S \rightarrow \mathbb{R}$, and then
-select the subset of tests that scores best on these measures. Because
+Search-based methods for test suite reduction evaluate subsets of $T$
+($S=\{s_1, \dots s_m\} \subset \mathcal{P}(T)$) using a cost and/or
+effectiveness measure $F: S \rightarrow \mathbb{R}$, and then select
+the subset of tests that scores best on these measures. Because
 setting $S:=\mathcal{P}(T)$ results in an exponential search space,
 search-based approaches are often combined with other methods – for
 example generating the subsets by applying clustering methods using a
@@ -182,7 +181,7 @@ similarity measure.
 
 The reduced test suite is then searched using the criterion
 
-$$T_s=\hbox{arg max}_{s_i \in S} F(s_i)$$
+$$T_s=\underset{s_i \in S}{\hbox{arg max}} F(s_i)$$
 
 Methods for test suite reduction based on searching are presented in
 \cite{coutinho2013test}, and \cite{wang2014cost}.
@@ -195,13 +194,15 @@ the reduction process. For example, search-based test suite reduction
 approaches can be enhanced by creating the subsets $S$ of $T$ by applying
 different clustering algorithms.
 
-Other methods that can not be easily classified into any of those three
-categories have been proposed in the literature, for example Integer
-Linear Programming-based solutions, which are used for multi-objective
-optimization (e.g. optimizing for high coverage, low running times
-and low memory usage of tests). An example for for an ILP-based test
-suite reduction system is FLOWER \cite{gotlieb2014flower}, as well as
-an approach based on reducing the test suite minimization problem to a
-satisfiability problem \cite{arito2012application} (solving instances
-of test suite minimization problems on SIR \cite{dosupporting2005}
-in most cases in less than 2 seconds).
+Other methods that can not be easily classified into any of those
+three categories have been proposed in the literature, for example
+Integer Linear Programming-based (ILP) solutions, which are used for
+multi-objective optimization (e.g. optimizing for high coverage, low
+running times and low memory usage of tests). An example for for an
+ILP-based test suite reduction system is FLOWER \cite{gotlieb2014flower}.
+
+Another approach presented in the literature, based on reducing
+the set-cover problem at the heart of test suite minimization
+to a satisfiability problem, is \cite{arito2012application},
+which solves instances of test suite minimization problems on SIR
+\cite{dosupporting2005} in most cases in less than 2 seconds.

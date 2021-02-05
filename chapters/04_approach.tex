@@ -19,27 +19,24 @@ modifications to fix faults discovered in the original code.
 
 \cite{cruciani2019scalable} compares seven different methods of
 test-suite reduction. Four of those (\textbf{FAST++}, \textbf{FAST-all},
-\textbf{FAST-CS} and \textbf{FAST-pw}) are in the FAST family
-(first introduced in \cite{miranda2018fast}), which uses clustering
-techniques to find representative test cases. Two other algorithms are
-taken from the similarly clustering-based ART family, first developed
-in \cite{chen2010adaptive}. The last reduction method examined in
-\cite{cruciani2019scalable} is the Greedy Additional (\textbf{GA})
-algorithm developed in \cite{rothermel2001prioritizing}, which is included
-because "for its simplicity and effectiveness [it] is often considered
-as a baseline."
+\textbf{FAST-CS} and \textbf{FAST-pw}) are in the FAST family , which
+uses clustering techniques to find representative test cases. Two
+other algorithms are taken from the similarly clustering-based ART
+family, first developed in \cite{chen2010adaptive}. The last reduction
+method examined in \cite{cruciani2019scalable} is the Greedy Additional
+(\textbf{GA}) algorithm developed in \cite{rothermel2001prioritizing},
+which is included because "for its simplicity and effectiveness [it]
+is often considered as a baseline."
 
 This paper also includes a random selection algorithm as a baseline,
 as recommended by \cite{khan2018systematic}.
 
 \subsection{FAST}
 
-The FAST family is a clustering-based family of algorithms for test
-suite reduction (\cite{miranda2018fast}, \cite{cruciani2019scalable}).
-
-The FAST family is a collection of 4 clustering based test suite
-reduction algorithms that work both with adequate and inadequate test
-suite reduction problems, especially for large test suites.
+The FAST family is a collection of 4 clustering based test suite reduction
+algorithms  (\cite{miranda2018fast}, \cite{cruciani2019scalable}) that
+work both with adequate and inadequate test suite reduction problems,
+especially for large test suites.
 
 \subsubsection{FAST++}
 
@@ -57,24 +54,24 @@ Since dealing with high-dimensional vector spaces is computationally
 costly (e.g. when computing the Euclidean distance), the algorithm
 performs a random projection into a lower-dimensional vector-space that
 nonetheless still mostly preserves the pairwise distances of the vectors
-(in this case a sparse random projection (\cite{achlioptas2003database})).
+(in this case a sparse random projection \cite{achlioptas2003database}).
 
-The second phase of FAST++ is executing the k-means++ algorithm \cite{arthur2006k}
-on the resulting vectors, with k in the inadequate case being the
-budget of the reduction, and in the adequate case being a variable
-that is incremented until the requirements are met. The k-means
+The second phase of FAST++ is executing the k-means++ algorithm
+\cite{arthur2006k} on the resulting vectors, with k in the inadequate
+case being the budget of the reduction, and in the adequate case being a
+variable that is incremented until the requirements are met. The k-means
 algorithm is a clustering algorithm that finds k clusters of vectors in a
 high-dimensional space, i.e. minimizing the distance between points within
 a cluster, by iteratively assigning points to the nearest mean (distance
 being measured in squared Euclidean distances) and recalculating means
 until a fixed point is reached. The k-means++ algorithm only differs
 from k-means in the method for choosing initial centers of clusters:
-While k-means selects values at random, k-means++ selects the initial by
-computing the center of all points, and then selecting k other centers by
-sampling points using a distribution proportional to the distance of the
-points to the global mean. This both increases speed %CANDO: citation?
-and gives guarantees that the solution is $\mathcal{O}(\log k)$ competitive
-to the optimal solution. %CANDO: [citation needed]
+While k-means selects values at random, k-means++ selects the initial
+center by computing the mean of all points, and then selecting k other
+centers by sampling points using a distribution proportional to the
+distance of the points to the global mean. This both increases speed and
+gives guarantees that the solution is $\mathcal{O}(\log k)$ competitive
+to the optimal solution \cite{arthur2006k}.
 
 After computing the k clusters, FAST++ returns the vectors closest to
 the centers of the k clusters (i.e. the tests most representatitve for
@@ -319,7 +316,7 @@ $$\hbox{MD}(u, v)=\sum_{i=1}^{n}|u_i-v_v|$$
 The stages in ART-F are the same as in ART-D, and it also returns a
 sequence of prioritized test cases.
 
-\subsection{Greedy Algorithm}
+\subsection{Greedy Additional Algorithm}
 
 The greedy algorithm used is the greedy additional algorithm from
 \cite{rothermel2001prioritizing}: In each iteration, it selects the test

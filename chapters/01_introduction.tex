@@ -25,34 +25,38 @@ are aware, there is no systematic survey of test suite runtimes in the
 industry). This process of growing test suites is mostly independent
 of the specific development process used (e.g. Agile or the waterfall
 model), and test suite growth is mostly a function of the growth of the
-underlying software (more edge cases and combinations of inputs needing
-to be tested).
+underlying software (with more edge cases and combinations of inputs
+needing to be tested).
 
 Similarly, model-based testing suffers from issues of combinatorial explosion,
 and the resulting test suites tend to be very big.
 
 To mitigate the costs and runtimes of regression and model-based test
-suites, different strategies have been devised: test case selection,
-which selects a subset of tests for the current execution of tests,
-test suite reduction, which permanently deletes a subset of tests from
-the test suite, and test case priorization, which changes the order of
-test execution to maximize the amount of faults that is found early in
-the test suite execution.
+suites, different strategies have been devised: test case selection, which
+selects a subset of tests for the current execution, test suite reduction,
+which permanently deletes a subset of tests from the test suite, and test
+case priorization, which changes the order of test execution to maximize
+the amount of faults that are found early in the test suite execution.
 
-\cite{cruciani2019scalable} presents a new family of test
-suite reduction algorithms, called the FAST ("FAST Approaches
-to Similarity-based Testing") algorithms (first developed in
-\cite{miranda2018fast}), and compares them to the algorithms presented
-in \cite{chen2010adaptive}, as well as the greedy additional algorithm
-presented in \cite{rothermel2001prioritizing}. They implement 4 algorithms
-from the FAST family, 2 from the ART ("Adaptive Random Testing") family
-and the greedy additional algorithm, and run the different algorithms
-on 10 different test programs and their test suites. They then compare
-the performance of the test suite reduction algorithms on 3 different
-variables: test suite reduction, fault detection loss, and runtime.
+\cite{cruciani2019scalable} presents a new family of test suite reduction
+algorithms, called the FAST ("FAST Approaches to Similarity-based
+Testing") algorithms (first developed in \cite{miranda2018fast}), and
+compares them to the algorithms presented in \cite{chen2010adaptive},
+as well as the greedy additional algorithm presented in
+\cite{rothermel2001prioritizing}. They implement 4 algorithms from the
+FAST family, 2 from the ART ("Adaptive Random Testing") family and the
+greedy additional algorithm, and run the different algorithms on the test
+suites from 10 different projects and their coverage information. They
+then compare the performance of the test suite reduction algorithms on
+3 different metrics: TSR (test suite reduction), FDL (fault detection
+loss), and runtime.
 
-This work then attempts to replicate their findings using the data
-from 6 additional open-source projects, as well as adding random
+We first explore the field of test suite reduction, touching on other
+methods for dealing with large test suites. We explain in detail the
+algorithms used in \cite{cruciani2019scalable}.
+
+We then attempt to replicate their findings using the data
+from 6 different open-source projects, as well as adding random
 test case selection as a baseline test suite reduction method
 to compare the other methods to (following Recommendation 8 from
 \cite{khan2018systematic}). Specifically, we rank the algorithms with
@@ -62,12 +66,5 @@ our findings mostly replicate the findings in \cite{cruciani2019scalable}
 can give researchers and test system designers more reliable information
 about which test suite reduction approaches to use and research further.
 
-We first explore the field of test suite reduction, touching on other
-methods for dealing with large test suites. We then explain in detail
-the algorithms used in \cite{cruciani2019scalable}.
-
-Finally, we attempt to determine how different test suite reduction
-strategies compare to each other in terms of time performance, fault
-detection loss and magnitude of reduction, and close with thoughts on
-further possible approaches to test suite reduction, as well as thoughts
-on other issues in the area.
+We close with thoughts on further possible approaches to test suite
+reduction, as well as thoughts on other issues in the area.

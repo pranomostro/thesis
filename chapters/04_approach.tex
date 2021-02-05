@@ -74,7 +74,7 @@ gives guarantees that the solution is $\mathcal{O}(\log k)$ competitive
 to the optimal solution \cite{arthur2006k}.
 
 After computing the k clusters, FAST++ returns the vectors closest to
-the centers of the k clusters (i.e. the tests most representatitve for
+the centers of the k clusters (i.e. the tests most representatitve of
 those clusters).
 
 \subsubsection{FAST-CS}
@@ -87,17 +87,15 @@ The second phase is different, as it attempts to cluster the set of
 points by finding a coreset, a set of points that approximate the shape
 of the set of vectors.
 
-%CANDO: find a source for the first description of coreset
-
 This is achieved by importance sampling: "All points have nonzero
 probability of being sampled, but points that are far from the center
 of the dataset (potentially good centers for clustering) are sampled
-with higher probability."
+with higher probability." (\cite{cruciani2019scalable} p. 4).
 
 The metric used for importance sampling is as follows:
 
 $$
-	Q(t) \leftarrow \frac{1}{2|T|}+\frac{d(P(t),\mu)^2}{\sum_{t' \in P}d(P(t'),\mu)^2}
+	Q(t):=\frac{1}{2|T|}+\frac{d(P(t),\mu)^2}{\sum_{t' \in P}d(P(t'),\mu)^2}
 $$
 
 where $\mu$ is the mean of the whole dataset, $T$ is the test suite,
@@ -115,7 +113,7 @@ between early test cases (the Jaccard distance between two sets $A$
 and $B$ being $JD(A, B)=1-\frac{|A \cap B|}{|A \cup B|}$).
 
 The algorithm uses three different concepts: \textit{shingling},
-\textit{minhashes} (and \textit{minhash signatures}), and
+\textit{minhashes} (together with \textit{minhash signatures}), and
 \textit{locality-sensitive hashing}.
 
 \textit{Shingling} is used as a method for transforming a test case into
@@ -131,11 +129,12 @@ coverage information) can be very large.
 
 \textit{Minhashing} is a method for deriving compact representations of
 sets. This is achieved by creating a list of hash functions $H=\{h_1,
-\dots h_k\}$, and for each test case $T$ (a set of shingles or of
-coverage information) calculating the list $[\hbox{arg min}_{t \in T}
-h_1(t), \dots \hbox{arg min}_{t \in T} h_k(t)]$ (which is called the
-signature of the set). Less formally, the minhash at position i is the
-minimal value of the hash function for any element of the set.
+\dots h_k\}$, and for each test case $T$ (a set of shingles or of coverage
+information) calculating the list $[\underset{t \in T}{\hbox{arg min }}
+h_1(t), \dots \underset{t \in T}{\hbox{arg min }} h_k(t)]$ (which is
+called the signature of the set). Less formally, the minhash at position
+i is the minimal value of the hash function for any element of the set
+of shingles/coverage.
 
 The Jaccard distance of two sets can be estimated by calculating the
 number of positions on which the minhash signatures $s_1$, $s_2$ of the
@@ -145,14 +144,12 @@ $$\hbox{EstimateJD}(s_1,s_2)=1-\frac{|\{i|i\in 1..k, s_1(i)=s_2(i)\}|}{|s_1|}$$
 
 \textit{Locality-sensitive hashing} is a further technique to make
 runtimes shorter. Let $S=\{s_1, \dots s_n\}$ be a set of minhash
-signatures of all tests. Now a matrix $M \in \mathbb{R}^{n \times k}$
-is created, by using the minhash signatures as columns. The rows of this
-matrix are now divided into bands of length $r$ (in the example 2):
+signatures of all tests. Now a matrix $M \in \mathbb{R}^{n \times
+k}$ is created, by using the minhash signatures as columns. The
+rows of this matrix are now divided into bands of length $r$ (in
+\autoref{tab:lsh_matrix} two).
 
-% CANDO: add matrix stuff, LSHs, lines between buckets, row indicators
-% See sheet notes
-
-\begin{figure}[!ht]
+\begin{figure}[H]
 \[
 \begin{blockarray}{cccccccccc}
 	& s_1 & s_2 & s_3 & s_4 & s_5 & s_6 & s_7 & s_8 & \\
@@ -181,9 +178,10 @@ matrix are now divided into bands of length $r$ (in the example 2):
 $b_n$ is the nth band, $r_n$ is the nth row, and $s_n$ is the nth
 signature.
 
-The columns within the bands are hashed into lsh values. If two lsh
-values correspond (e.g. in the case where the columns with values 11
-and 5 are both hashed into 6), they are put into the same candidate set.
+The columns within the bands are hashed into locality-sensitive hash
+values. If two locality-sensitive hash values correspond (e.g. in the
+case where the columns with values 11 and 5 are both hashed into 6),
+they are put into the same candidate set.
 
 When the hash of the values in different columns of two bands is the
 same (the two minhashes are in the same bucket), the two test cases the
@@ -192,7 +190,7 @@ minhashes belong to are added to the confusingly named candidate set
 set contains tests that have a Jaccard distance over a threshold s,
 where $s \approx 1-(r/n)^{1/r}$.
 
-The algorithm follows different steps:
+The algorithm follows the following steps:
 
 \begin{itemize}
 	\item[] 1. Calculate the minhashes
@@ -203,13 +201,11 @@ The algorithm follows different steps:
 	\item[] 6. Return $S$
 \end{itemize}
 
-%CANDO: formulate less confusingly?
-
 The function that selects the test case from the remaining test cases
 maximizes the Jaccard distance of the returned test and the so far
-selected test cases $S$ (where $M$ is a function that produces minhashes, and Estimate:
+selected test cases $S$ (where $M$ is a function that produces minhashes):
 
-$$ \hbox{arg max}_{c \in T \backslash C_s} \hbox{EstimateJD}(M(S), M(c))$$
+$$ \underset{c \in T \backslash C_s}{\hbox{arg max}} \hbox{EstimateJD}(M(S), M(c))$$
 
 \subsubsection{FAST-all}
 
@@ -229,8 +225,6 @@ selection.
 
 In the inadequate case, random selection simply chooses $B$ random tests
 from the test set (Algorithm \autoref{code:rsbudget}).
-
-%TODO: fix the references for the pseudocode
 
 \begin{algorithm}
 \caption[Random selection, budget]{Random selection, budget}\label{code:rsbudget}
@@ -300,18 +294,19 @@ executed again.
 
 \subsubsection{ART-F}
 
-The ART-F algorithm was introduced in \cite{zhou2012fault}. It
-is similar in structure to ART-D, but uses the Manhattan distance
-instead of the Jaccard distance, and frequency information instead
-of coverage information, as well as having a fixed-size candidate
-set. Frequency information is information about how often a part of the
-SUT is executed by a test. However, in the presented experiment, since
-frequency information is not available, coverage information is used as
-a place-holder, where a test covering a statement is treated as the test
-executing tha statement with frequency 1. The Manhattan distance of two
-sequences of frequency information is calculated as such:
+The ART-F algorithm was introduced in \cite{zhou2012fault}. It is
+similar in structure to ART-D, but uses the Manhattan distance instead
+of the Jaccard distance, and frequency information instead of coverage
+information, as well as having a fixed-size candidate set. Frequency
+information is information about how often a part of the SUT is executed
+by a test. However, in the experiment in \cite{cruciani2019scalable} (and
+therefore in this thesis), since frequency information is not available,
+coverage information is used as a place-holder, where a test covering a
+statement is treated as the test executing that statement with frequency
+1. The Manhattan distance of two sequences of frequency information is
+calculated as such:
 
-$$\hbox{MD}(u, v)=\sum_{i=1}^{n}|u_i-v_v|$$
+$$\hbox{MD}(u, v)=\sum_{i=1}^{n}|u_i-v_i|$$
 
 The stages in ART-F are the same as in ART-D, and it also returns a
 sequence of prioritized test cases.
@@ -325,9 +320,9 @@ case with the highest number of yet uncovered program entities.
 \begin{algorithm}
 \caption[Greedy selection next test case]{Greedy selection next test case}\label{code:ganext}
 \begin{algorithmic}
-\Function{ganext}{$RS, TS, cov$}
+\Function{ganext}{$RS, TS, \hbox{cov}$}
 	\State $\hbox{alreadycov} \gets \bigcup_{t \in RS} \hbox{cov}(t)$
-	\State \textbf{return} $\hbox{arg max}_{t \in TS} |cov(t)\backslash \hbox{alreadycov}|$
+	\State \textbf{return} $\underset{t \in TS}{\hbox{arg max}} |\hbox{cov}(t)\backslash \hbox{alreadycov}|$
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
@@ -338,11 +333,11 @@ coverage:
 \begin{algorithm}
 \caption[Greedy selection, adequate]{Greedy selection, adequate}\label{code:gaadequate}
 \begin{algorithmic}
-\Function{gaadequate}{$TS, cov$}
+\Function{gaadequate}{$TS, \hbox{cov}$}
 	\State $RS \gets \emptyset$
 	\State $allcov \gets \bigcup_{t \in TS} \hbox{cov}(t)$
 	\While{$\bigcup_{t \in RS} \hbox{cov}(t) \neq allcov$}:
-		\State $s \gets ganext(RS, TS, cov)$
+		\State $s \gets ganext(RS, TS, \hbox{cov})$
 		\State $TS \gets TS \backslash \{s\}$
 		\State $RS \gets RS \cup \{s\}$
 	\EndWhile
@@ -356,11 +351,10 @@ In the budget case, we instead select greedily $B$ times.
 \begin{algorithm}
 \caption[Greedy selection, budget]{Greedy selection, budget}\label{code:gabudget}
 \begin{algorithmic}
-\Function{gabudget}{$TS, cov, B$}
+\Function{gabudget}{$TS, \hbox{cov}, B$}
 	\State $RS \gets \emptyset$
-	\State $allcov \gets \bigcup_{t \in TS} \hbox{cov}(t)$
-	\For $B$ times
-		\State $s \gets ganext(RS, TS, cov)$
+	\For $\hbox{ }B$ times
+		\State $s \gets ganext(RS, TS, \hbox{cov})$
 		\State $TS \gets TS \backslash \{s\}$
 		\State $RS \gets RS \cup \{s\}$
 	\EndFor

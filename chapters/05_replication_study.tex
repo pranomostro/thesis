@@ -16,18 +16,18 @@ performance in relation to a baseline algorithm.
 
 \subparagraph{Research Question 1.1: Can the relative effectiveness in TSR be replicated on other study objects?}
 
-We care about the size of the reduced test suite, therefore it is valuable
-by how much test suites are reduced. We use the TSR metric (defined
-in ~\ref{chapter:terms}) to evaluate the magnitude of the reduction.
-Using the TSR is mostly useful in adequate scenarios, since in inadequate
-scenarios, the size of the reduced test suite relative to the original
-test suite is fixed.
+We care about the size of the reduced test suite, therefore it is
+valuable to know by how much test suites are reduced. We use the TSR
+metric (defined in ~\ref{chapter:terms}) to evaluate the magnitude of
+the reduction.  Using the TSR is mostly useful in adequate scenarios,
+since in inadequate scenarios, the size of the reduced test suite relative
+to the original test suite is determined by the budget.
 
 \subparagraph{Research Question 1.2: Can the relative effectiveness in FDL be replicated on other study objects?}
 
 \cite{rothermel2002empirical} finds that test suite reduction can severely
-compromise fault detection capability. To test whether this is the case,
-the FDL metric is used to examine the fault detection capabilities
+compromise fault detection capability. To test whether this is the case
+here, the FDL metric is used to examine the fault detection capabilities
 for the algorithms given new data.
 
 \paragraph{Research Question 2: Can the relative runtime performance of the different algorithms be replicated?}
@@ -49,7 +49,7 @@ random selection on runtime, TSR and FDL.
 \section{Study Design}
 
 We approached the research questions by collecting test case source code,
-converage information and fault-detection data from projects that had
+coverage information and fault-detection data from projects that had
 not been used in \cite{cruciani2019scalable}, and running the code from
 that paper on the new data.
 
@@ -65,10 +65,10 @@ which no statistically significant difference could be found were ranked
 equally high, for algorithms with significantly different performance
 we used the median FDL/TSR to determine the ranking.
 
-We used this approach to ranking the different algorithms to ensure our
+We used this approach to rank the different algorithms to ensure our
 results were comparable to the results in the original paper.
 
-The result was operationalized by assigning the algorithms letters,
+The ranking was operationalized by assigning the algorithms letters,
 with "(a)" being the signifier for the best performing algorithms,
 "(b)" for the second-best, and so on (several algorithms could receive
 the same ranking).
@@ -80,7 +80,7 @@ We then compared the rankings according to TSR and FDL to the ones in
 
 We also computed the mean, median and standard deviation for the runtime
 of the different approaches, and ranked them according to the method
-described for Research Question 2.
+described for Research Question 1.
 
 We then compared our rankings for runtime to the ones in
 \cite{cruciani2019scalable}.
@@ -93,12 +93,13 @@ in comparison to the other approaches presented.
 
 \section{Study Objects}
 
-The code bases and test suites selected for this study were small to
-medium sized open-source Java projects, which we selected because tools
-for generating coverage information and mutation-test data using Maven are
-available and comparatively easy to use. The selected projects all used
-either JUnit 4 or JUnit 5 as their testing framework, and the tool Maven
-for building and testing. We used the latest version as of November 2020.
+The code bases and test suites selected for this study were small
+to medium sized open-source Java projects, which we selected because
+tools for generating coverage information and mutation-test data using
+Maven are available and comparatively easy to use. The selected projects
+all used either JUnit 4 or JUnit 5 as their testing framework, and the
+tool Maven for building and testing. We used the latest versions of the
+projects as of November 2020.
 
 We decided to use open-source projects to make checking our generated
 data easier, as well as for availability reasons.
@@ -174,7 +175,7 @@ coverage program JaCoCo, the Teamscale JaCoCo Agent (available at
 Since the Teamscale JaCoCo Agent only supports line coverage, other
 types of coverage had to be eschewed.
 
-The json files created by the teamscale jacoco agent were converted
+The json files created by the Teamscale JaCoCo Agent were converted
 from JSON into the format used by \cite{cruciani2019scalable}: a file
 containing a list of numbers in each line, with the numbers $n_1, \dots
 n_i$ in line $n$ corresponding to the source lines of code in the tested
@@ -188,7 +189,7 @@ described in \cite{coles2016pit}, available at \url{http://pitest.org/}).
 
 The generated mutation test data was converted from XML to the format
 used in the code of \cite{cruciani2019scalable}: a text file containing
-a list of number per line, the numbers at line $n$ corresponding to
+a list of numbers per line, the numbers at line $n$ corresponding to
 different classes for which the test case at line $n$ in the black-box
 file did find faults.
 
@@ -227,23 +228,23 @@ GiB of RAM available.
 
 \paragraph{Research Question 1.1 (Can TSR findings be replicated?)}
 
-\autoref{tab:tsr_stats} shows the descriptive statistical results
-(median, standard deviation and ordering for the Kruskal-Wallis test)
-in the adequate case, and \autoref{fig:tsr_box} shows boxplots for
-TSR for the different algorithms.
+\autoref{tab:tsr_stats} shows the descriptive statistical results (mean,
+median, standard deviation and ordering for the Kruskal-Wallis test)
+in the adequate case, and \autoref{fig:tsr_box} shows boxplots for TSR
+for the different algorithms.
 
 For Java programs with statement coverage in the adequate case,
 \cite{cruciani2019scalable} order the different methods of test suite
 reduction according to TSR. Their results mostly agree with ours: They
 rank GA highest, then FAST++ and FAST-pw, then FAST-CS, FAST-all below
 that, and the ART family lowest; we also rank GA highest, followed by
-FAST++, then FAST-CS and FAST-pw at the same level, then FAST-all, and
-the ART family last (on par with random selection). However, the median
-test suite reduction they report for these methods is much lower than what
-we observe (at least for the java programs): even GA only achives a TSR
-of 12.30, while in our experiment GA achieves a TSR of over 40. However,
-their results with C programs are more stark than ours, achieving a TSR
-of more than 90 for GA or FAST++.
+FAST++, then FAST-CS and FAST-pw at the same level, then FAST-all, and the
+ART family last (on par with random selection). However, the median test
+suite reduction they report for these methods is much lower than what we
+observe (at least for the java programs): even GA only achives a TSR of
+12.30, while in our experiment GA achieves a TSR of over 40. However,
+their results with C programs are more stark than ours, achieving a
+median TSR of more than 90 for GA or FAST++.
 
 %CANDO: Use Borda-count to determine the amount of agreement in these
 %rankings?
@@ -251,7 +252,7 @@ of more than 90 for GA or FAST++.
 Our data shows higher variance in TSR performance on all algorithms.
 
 \begin{table}[htpb]
-	\caption[TSR statistical results, adequate]{Different variables relating to TSR (mdn is the median, $\sigma$ being the standard deviation, and $\delta$ being the ranking in the Kruskal-Wallis test)}\label{tab:tsr_stats}
+	\caption[TSR statistical results, adequate]{Different variables relating to TSR ($\mu$ is the mean, mdn is the median, $\sigma$ being the standard deviation, and $\delta$ being the ranking in the Kruskal-Wallis test)}\label{tab:tsr_stats}
 	\centering
 	\begin{tabular}{| l | l | l | l | l |}
 	\midrule
@@ -307,12 +308,12 @@ the approaches is sorted into the bucket of worse-performing
 approaches. \cite{cruciani2019scalable} agrees that the ART family
 is best-performing, but find that FAST-all is second-best, GA being
 third-best, and FAST-CS, FAST-pw and FAST++ coming last. At the moment,
-we don't have a hypothesis about why this might be the case. It seems
-relevant, however, that the median fault detection loss for data was 0 for
-all algorithms (the mean fault detection loss being non-zero, however),
-just as the ART family and FAST-all in \cite{cruciani2019scalable}.
-Perhaps this is caused by single tests both having large coverage and
-detecting a majority of faults.
+we are not sure why this might be the case. It seems relevant, however,
+that the median fault detection loss for data was 0 for all algorithms
+(the mean fault detection loss being non-zero, however), just as the
+ART family and FAST-all in \cite{cruciani2019scalable}.  Perhaps this
+is caused by single tests both having large coverage and detecting a
+majority of faults.
 
 This hypothesis is further supported by the observation that the variance
 in performance on all algorithms is much lower than in the original paper,
@@ -374,24 +375,25 @@ measurements (e.g. in the case of ART-D, where the mean reduction time is
 more than two orders of magnitude greater than the median reduction time).
 
 Comparing the budget scenario to the statement-coverage based budget
-(we remove function and branch-coverage based approaches) scenario in
-\cite{cruciani2019scalable}, one can observe striking differences. While
-GA performs best in our measurements, the original paper ranks it
-in the middle (although, in the function-based coverage test, their
-measurements agree with ours). The approaches from the FAST family perform
-rather mediocre, receiving ranks (d) (FAST++ and and FAST-CS) and (e)
-(FAST-all and FAST-pw), while in the original measurements, FAST++
-is ranked second-best, followed by FAST-CS, and FAST-all and FAST-pw
-being ranked lowest. Algorithms from the ART family receive relatively
-high rankings in our measurements ((b) and (c)), while in the original
-measurements, they also perform mediocre (around as well as GA).
+scenario in \cite{cruciani2019scalable} (we don't consider function
+and branch-coverage based approaches), one can observe striking
+differences. While GA performs best in our measurements, the original
+paper ranks it in the middle (although, in the function-based coverage
+test, their measurements agree with ours). In our results, the approaches
+from the FAST family perform rather mediocre, receiving ranks (d)
+(FAST++ and and FAST-CS) and (e) (FAST-all and FAST-pw), while in the
+original measurements, FAST++ is ranked second-best, followed by FAST-CS,
+and FAST-all and FAST-pw being ranked lowest. Algorithms from the ART
+family receive relatively high rankings in our measurements ((b) and
+(c)), while in the original measurements, they also perform mediocre
+(around as well as GA).
 
 In the adequate scenario, we also only examine the statement-coverage
 based measurements from the original paper. Our results rank RS highest,
 followed by GA, while GA receives only rank (c) in the original results.
 From the FAST family, FAST++ and FAST-CS rank just below GA, while
 in the original results, they come out as clear winners. FAST-pw and
-FAST-all rank are ranked lowest in our results, even below the ART family,
+FAST-all are ranked lowest in our results, even below the ART family,
 while in the original results, ART algorithms are clearly ranked lowest.
 We suspect that this result is due to the difference in medians between
 the datasets we used and the original dataset: The dataset we used
@@ -463,12 +465,12 @@ statistically significantly differentiate the algorithms in performance,
 similar to the original paper.
 
 Our results in runtime performance differ from the original results,
-though, disagreeing both in the adequate and the budget case. We
-hypothesize that this is due to different distributions in the sizes
-of the test suites tested on, with the test suites we used being both
-smaller and larger than the test suites used in the original paper, which
-makes the median of runtimes less useful at determining the relative
-performance of algorithms.
+disagreeing both in the adequate and the budget case. We hypothesize
+that this is due to different distributions in the sizes of the test
+suites tested on, with the test suites we used being both smaller and
+larger than the test suites used in the original paper, which makes the
+median of runtimes less useful at determining the relative performance
+of algorithms.
 
 We cautiously conclude that for test suites of the sizes we have examined,
 the GA algorithm makes a good trade-off between test suite reduction,

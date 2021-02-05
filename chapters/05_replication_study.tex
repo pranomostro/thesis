@@ -201,15 +201,13 @@ projects) after minimal modification. These modifications were as follows:
 
 \begin{enumerate}
 \item We added a further algorithm for the random selection of test cases.
-\item We fixed three bugs we found in the code:
+\item We fixed three bugs we found in the code, and submitted fixing changes to the the original code repository\footnote{At \url{https://github.com/ICSE19-FAST-R/FAST-R}}:
 	\begin{enumerate}
-	\item an off-by-one error in loading coverage information
-	\item a bug where in small test suites sometimes the candidate set would be empty
-	\item a mistake where a a measured variable was not reported correctly for FAST-all
+	\item an off-by-one error in loading coverage information\footnote{A diff for the fix can be found at \url{https://github.com/pranomostro/thesis_code/blob/master/coverage_fix.diff}}
+	\item a bug where in small test suites sometimes the candidate set would be empty\footnote{A diff for the fix of the bug can be found at \url{https://github.com/pranomostro/thesis_code/blob/master/emptycandidates_fix.diff}}
+	\item a mistake where a a measured variable was not reported correctly for FAST-all\footnote{Again, a fix can be found at \url{https://github.com/pranomostro/thesis_code/blob/master/stime_fix.diff}}
 	\end{enumerate}
 \end{enumerate}
-
-% The changes made to the source code can be found at CANDO.
 
 In the budget scenario, we considered budgets between 1\% and 30\%, with
 a step increase of 1\%. We considered only line coverage, and performed

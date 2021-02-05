@@ -17,12 +17,18 @@ the last change to the software.
 %CANDO: add sources for the cost of development & also hopefully long
 %execution times for test suites.
 
-Regression testing takes up a significant portion of development cost
-(up to 50\%, according to \cite{ramler2006economic}), and the resulting
-test suites can grow quite significantly in size and execution time,
-which hinders development speed and increases costs.
+Regression testing often takes up a significant portion of development
+cost (up to 50\%, according to \cite{ramler2006economic}), and the
+resulting test suites can grow quite significantly in size and execution
+time, which hinders development speed and increases costs (as far as we
+are aware, there is no systematic survey of test suite runtimes in the
+industry). This process of growing test suites is mostly independent
+of the specific development process used (e.g. Agile or the waterfall
+model), and test suite growth is mostly a function of the growth of the
+underlying software (more edge cases and combinations of inputs needing
+to be tested).
 
-Similarly, model-based testing suffers from issues of combinatorial explosion, %CANDO: explain?
+Similarly, model-based testing suffers from issues of combinatorial explosion,
 and the resulting test suites tend to be very big.
 
 To mitigate the costs and runtimes of regression and model-based test

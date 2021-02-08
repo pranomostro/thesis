@@ -20,7 +20,7 @@ suite reduction methods.
 
 The methods for improving the runtimes of large test suites discussed
 in the literature can be divided into three related approaches
-(\cite{yoo2012regression}): Test suite minimization (here called test
+\cite{yoo2012regression}: Test suite minimization (here called test
 suite reduction), test case priorization, and test case selection.
 
 %Distinction: Temporary or permanent, adequate or inadequate
@@ -60,7 +60,8 @@ is met as soon as possible.
 \section{Test Case Selection}
 
 Test case selection attempts to temporarily find a subset of tests that
-maximize the requirements for a set of of recent changes to the software.
+maximize the fulfilled requirements for a set of of recent changes to
+the software.
 
 \cite{yoo2012regression} formulate the problem of test case selection as
 
@@ -77,7 +78,7 @@ of individual tests.
 Test suite reduction, on the other hand, attempts to permanently reduce
 the size of the test suite by removing redundant tests. The distinguishing
 feature from test case selection is that it doesn't take into account
-recent changes, and removes test cases permanently.
+recent changes to the code of the SUT, and removes test cases permanently.
 
 %CANDO: create subsubsections here?
 
@@ -92,20 +93,21 @@ $$T_{r}=\underset{T_r}{\hbox{arg min}} |T_{r} \subset T: R=\bigcup_{t_{r} \in T_
 This goal, however, is rarely fulfilled. Often, the objective is to
 keep the resulting test suite as small as possible, since reaching
 this optimum is computationally hard (as researchers have remarked
-(\cite{khan2016survey}), it is equivalent to the NP-complete set cover
-problem (\cite{garey1979computers})).
+\cite{khan2016urvey}, it is equivalent to the NP-complete set cover
+prblem \cite{garey1979computers}.
 
 Researchers have attempted to reduce the size of test suites further,
-while still keeping runtimes small.
+while still keeping runtimes small and fulfilling the requirements to
+a reasonable degree.
 
 Adequate reduction needs the requirements $R$ to be present at the time
 of reduction to judge whether all requirements have been fulfilled.
 
-The second case of test suite reduction is the inadequate/budget one. An
-inadequate test suite reduction fixes the size of the reduce test suite
-to a budget $B=|T_{r}|$. This cannot guarantee that all requirements
-are completely fulfilled, but often reduces runtimes and reduction
-times significantly.
+The second method of test suite reduction is the inadequate/budget
+one. An inadequate test suite reduction fixes the size of the reduce
+test suite to a budget $B=|T_{r}|$. This cannot guarantee that all
+requirements are completely fulfilled, but often reduces runtimes and
+reduction times significantly.
 
 Inadequate reduction can work without access to the requirements.
 For example, the FAST family needs only the content of the testcases to
@@ -150,10 +152,13 @@ highest amount of coverage yet not covered by the reduced test suite).
 
 Clustering approaches to test suite reduction attempt to maximize
 a distance metric on the resulting test suite. This is achieved by
-separating $T$ into disjunctive subsets using a clustering algorithm
-so that the difference between two subsets doesn't fall under a given %CANDO: really? Is that it?
-threshold, and then sampling test cases from the subsets (in the optimal
-case one representative test case per subset).
+separating $T$ into disjunctive subsets using a clustering algorithm so
+that the difference between the clusters of tests is maximized, and the
+difference within clusters of tests is minimized (the difference between
+tests being calculated using a distance metric such as the Euclidean
+distance or the Manhattan distance). Clustering methods then sample
+test cases from the subsets (in the optimal case one representative test
+case per subset).
 
 This method doesn't need the test requirements to be available:
 many approaches (for example from the FAST family examined in
@@ -173,11 +178,10 @@ and \cite{miranda2018fast}, but also the ART family from
 Search-based methods for test suite reduction evaluate subsets of $T$
 ($S=\{s_1, \dots s_m\} \subset \mathcal{P}(T)$) using a cost and/or
 effectiveness measure $F: S \rightarrow \mathbb{R}$, and then select
-the subset of tests that scores best on these measures. Because
-setting $S:=\mathcal{P}(T)$ results in an exponential search space,
-search-based approaches are often combined with other methods – for
-example generating the subsets by applying clustering methods using a
-similarity measure.
+the subset of tests that scores best on these measures. Because setting
+$S:=\mathcal{P}(T)$ results in an exponential search space, search-based
+approaches often use heuristics to prune parts of the search space,
+for example very small and very large subsets.
 
 The reduced test suite is then searched using the criterion
 

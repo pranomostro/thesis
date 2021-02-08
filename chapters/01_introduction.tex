@@ -3,13 +3,13 @@
 
 \chapter{Introduction}\label{chapter:introduction}
 
-Software often has faults: ways in which the actual behavior of the
-software diverges from the intended or specified behavior. Computer
-scientists have devised different strategies for finding and removing
-bugs: Formal software verification, code reviews, and different types of
-testing: unit testing, which tests the behavior of small software modules
-(such as classes), model-based testing, which automatically generates
-test suites from the specification of a software system, and regression
+Software often has faults: ways in which the actual behavior of a software
+system diverges from the intended (or specified) behavior. Computer
+scientists have devised different strategies for finding bugs: Formal
+software verification, code reviews, and different types of testing:
+unit testing, which tests the behavior of small software modules (such
+as classes), model-based testing, which automatically generates test
+suites from the specification of a software system, and regression
 testing, which re-validates a software after changes have been made,
 aiming to show developers whether they have introduced new bugs after
 the last change to the software.
@@ -32,11 +32,13 @@ Similarly, model-based testing suffers from issues of combinatorial explosion,
 and the resulting test suites tend to be very big.
 
 To mitigate the costs and runtimes of regression and model-based test
-suites, different strategies have been devised: test case selection, which
-selects a subset of tests for the current execution, test suite reduction,
-which permanently deletes a subset of tests from the test suite, and test
-case priorization, which changes the order of test execution to maximize
-the amount of faults that are found early in the test suite execution.
+suites, different strategies have been devised (the following list is
+not exhaustive): test case selection, which selects a subset of tests for
+the current execution, test suite reduction, which permanently deletes a
+subset of tests from the test suite, and test case priorization, which
+changes the order of test execution to maximize the amount of faults
+that are found early in the test suite execution (in this thesis, we
+only focus on test suite reduction).
 
 \cite{cruciani2019scalable} presents a new family of test suite reduction
 algorithms, called the FAST ("FAST Approaches to Similarity-based

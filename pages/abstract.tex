@@ -3,19 +3,18 @@
 Test suites have been growing along with codebases, which has resulted
 in them having long run-times (slowing down the development process) and
 higher computational needs (costing electricity and hardware). Several
-different approaches have been developed to reduce the time for test
-suite execution to give useful results. One of these approaches is test
-suite reduction: selecting a sample of tests that maximizes coverage
-on the tested source code while still reducing runtime. This Bachelor's
-thesis attempts to replicate the findings in \cite{cruciani2019scalable},
-which borrows techniques from big data analysis to handle very large
-test suites. From 6 open-source projects, we collect test suites,
-generate coverage information and fault detection information and
-perform test suite reductions on these test suites using the
-algorithms from \cite{cruciani2019scalable}. We rank the algorithms
-according to three different metrics, and find that our experiments
-largely replicate the rankings on the metrics of test suite reduction
-and fault detection loss, but disagree on the runtime performance of the
-different algorithms (for example not ranking the algorithms developed
-in \cite{cruciani2019scalable} highest). We discuss possible reasons
-for this discrepancy.
+different approaches have been developed to reduce the time for test suite
+execution. One of these approaches is test suite reduction: selecting a
+sample of tests that maximizes coverage on the tested source code while
+still reducing runtime. This Bachelor's thesis attempts to replicate the
+findings in \cite{cruciani2019scalable}, which borrows techniques from
+big data analysis to handle very large test suites. From 6 open-source
+projects, we collect test suites, generate coverage information and
+fault detection information and perform test suite reductions on these
+test suites using the algorithms from \cite{cruciani2019scalable}. We
+rank the algorithms according to three different metrics, and find that
+our experiments largely replicate the rankings in terms of the metrics
+of test suite reduction and fault detection loss, but disagree on the
+runtime performance of the different algorithms (for example not ranking
+the algorithms developed in \cite{cruciani2019scalable} highest). We
+discuss possible reasons for this discrepancy.

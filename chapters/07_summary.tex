@@ -3,11 +3,11 @@
 
 \chapter{Summary}\label{chapter:summary}
 
-In this paper, we motivated and formulated the problem of handling large
+In this thesis, we motivated and formulated the problem of handling large
 test suites: As test suites for regression testing and model-based testing
 become more comprehensive, their running times are often prohibitive to
-effective software development. We examined three different approaches
-to this problem formulated in the literature: test case priorization,
+effective software development. We examined three different approaches to
+address this problem formulated in the literature: test case priorization,
 test case selection, and test suite reduction. For test suite reduction,
 we in turn presented and shortly discussed a categorization of different
 algorithms: greedy selection algorithms, clustering-based algorithms,
@@ -23,7 +23,7 @@ cases instead of Jaccard distance); two algorithms from the ART family
 and ART-F, which maximizes the Manhattan distance); and the greedy
 additional algorithm (which selects the test case with the highest amount
 of yet uncovered program components). We also described random selection
-of test cases, which was not described in the original paper.
+of test cases, which was not analyzed in the original paper.
 
 We then formulated four research questions, which outlined our attempt
 to replicate the findings in \cite{cruciani2019scalable}, examining
@@ -40,5 +40,6 @@ performance using the Kruskal-Wallis test. We found that our results largely
 replicated the original results from \cite{cruciani2019scalable}, although
 we observed differences especially in total runtime performance.
 
-We described both threats to validity for our results, and presented
-ideas for future work in the area.
+Finally, we presented ideas for future work in the area, identifying
+mostly possible infrastructure improvements in the research in test suite
+reduction, such as larger datasets of fault and coverage information.
